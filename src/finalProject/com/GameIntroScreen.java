@@ -1,4 +1,4 @@
-package finalProject.com;
+package finalProject.com; // Game intro draft
 
 import javax.swing.*;
 import java.awt.*;
