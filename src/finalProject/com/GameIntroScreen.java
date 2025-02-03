@@ -24,13 +24,11 @@ public class GameIntroScreen extends JPanel {
     private Clip backgroundMusic;
 
     public GameIntroScreen() {
-        // Load images
         background = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/ui inspo.png").getImage();
         characterLeft = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/ui_inspo__1_-removebg-preview.png").getImage();
         characterRight = createMirroredImage(characterLeft);
         currentCharacter = characterLeft;
 
-        // Play background music
         playBackgroundMusic();
 
         // Timer for loading bar
@@ -75,7 +73,7 @@ public class GameIntroScreen extends JPanel {
         characterTimer.start();
     }
 
-    // Method to create a mirrored version of the character image
+    // mirrored version of the character image
     private Image createMirroredImage(Image original) {
         int width = original.getWidth(null);
         int height = original.getHeight(null);
@@ -86,7 +84,7 @@ public class GameIntroScreen extends JPanel {
         return mirrored;
     }
 
-    // Method to play background music
+    // background music
     private void playBackgroundMusic() {
         try {
             File musicFile = new File("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/super-mario.wav");
@@ -105,10 +103,10 @@ public class GameIntroScreen extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Draw background
+        // background
         g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 
-        // Draw blinking stars
+        // blinking stars
         g2d.setColor(new Color(255, 255, 255, starAlpha));
         for (int i = 0; i < 20; i++) {
             int x = (int) (Math.random() * getWidth());
@@ -116,7 +114,7 @@ public class GameIntroScreen extends JPanel {
             g2d.fillOval(x, y, 3, 3);
         }
 
-        // Draw loading bar
+        // loading bar
         int barWidth = 200;
         int barHeight = 20;
         int barX = getWidth() / 2 - barWidth / 2;
@@ -126,17 +124,17 @@ public class GameIntroScreen extends JPanel {
         g2d.setColor(Color.GREEN);
         g2d.fillRect(barX, barY, (loadingProgress * barWidth) / 100, barHeight);
 
-        // Draw loading text below bar
+        // loading text below bar
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 16));
         String loadingText = "  Loading...";
         int textWidth = g2d.getFontMetrics().stringWidth(loadingText);
         g2d.drawString(loadingText, getWidth() / 2 - textWidth / 2, barY + barHeight + 20);
 
-        // Draw character moved slightly to the right, but not blocking the keys image
+        // character position
         int charWidth = currentCharacter.getWidth(null) / 2;
         int charHeight = currentCharacter.getHeight(null) / 2;
-        int charX = getWidth() / 2 - charWidth / 2 + 2; // Reduced the distance moved to the right
+        int charX = getWidth() / 2 - charWidth / 2 + 2;
         int charY = barY - charHeight - 20;
         g2d.drawImage(currentCharacter, charX, charY, charWidth, charHeight, this);
     }
