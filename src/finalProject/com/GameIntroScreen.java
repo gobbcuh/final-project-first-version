@@ -1,4 +1,4 @@
-package finalProject.com; // Game intro draft
+package finalProject.com; // game intro draft
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class GameIntroScreen extends JPanel {
 
         playBackgroundMusic();
 
-        // Timer for loading bar
+        // timer for loading bar
         loadingTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,7 +45,7 @@ public class GameIntroScreen extends JPanel {
         });
         loadingTimer.start();
 
-        // Timer for blinking stars
+        // timer for blinking stars
         starTimer = new Timer(150, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,7 +61,7 @@ public class GameIntroScreen extends JPanel {
         });
         starTimer.start();
 
-        // Timer for character animation (flipping left and right)
+        // timer for character animation (flipping left and right)
         characterTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
