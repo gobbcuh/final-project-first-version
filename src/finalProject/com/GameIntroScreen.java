@@ -115,8 +115,8 @@ public class GameIntroScreen extends JPanel {
         }
 
         // loading bar
-        int barWidth = 200;
-        int barHeight = 20;
+        int barWidth = 288;
+        int barHeight = 23;
         int barX = getWidth() / 2 - barWidth / 2;
         int barY = getHeight() - 100;
         g2d.setColor(Color.BLACK);
@@ -126,7 +126,7 @@ public class GameIntroScreen extends JPanel {
 
         // loading text below bar
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.setFont(new Font("Lucida Console", Font.BOLD, 16));
         String loadingText = "  Loading...";
         int textWidth = g2d.getFontMetrics().stringWidth(loadingText);
         g2d.drawString(loadingText, getWidth() / 2 - textWidth / 2, barY + barHeight + 20);
