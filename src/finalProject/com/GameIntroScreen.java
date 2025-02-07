@@ -4,53 +4,49 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
 public class GameIntroScreen extends JPanel {
-    private Image background;
-    private Image characterLeft;
-    private Image characterRight;
-    private Image currentCharacter;
-    private int loadingProgress = 0;
+    private Image[] backgrounds; // loading background images
     private Timer loadingTimer;
     private Timer starTimer;
-    private Timer characterTimer;
+    private Timer backgroundTimer; // cycling through background images
     private int starAlpha = 255;
     private boolean fadeOut = true;
-    private boolean facingLeft = true;
     private Clip backgroundMusic;
     private JFrame parentFrame;
-    private int fadeAlpha = 0; // For fade transition
+    private int fadeAlpha = 0; // fade transition
     private boolean transitioning = false; // To control the transition state
+    private int currentBackgroundIndex = 0; // Index to track the current background image
+    private String loadingText = "Loading";
+    private int dotCount = 0;
+    private Timer textAnimationTimer; // timer for loading text animation
 
     public GameIntroScreen(JFrame frame) {
         this.parentFrame = frame;
-        background = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/ui inspo.png").getImage();
-        characterLeft = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophia.png").getImage();
-        characterRight = createMirroredImage(characterLeft);
-        currentCharacter = characterLeft;
+
+        // loading the background images
+        backgrounds = new Image[4];
+        for (int i = 0; i < 4; i++) {
+            backgrounds[i] = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/loading-bg" + (i + 1) + ".png").getImage();
+        }
 
         playBackgroundMusic();
 
-        // timer for loading bar
-        loadingTimer = new Timer(200, new ActionListener() {
+        // timer for loading text animation
+        textAnimationTimer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (loadingProgress < 100) {
-                    loadingProgress += 2;
-                    repaint();
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    startTransition();
-                }
+                dotCount = (dotCount + 1) % 6; // Cycle through 0 to 5 dots
+                loadingText = "Loading" + ".".repeat(dotCount); // Update loading text
+                repaint();
             }
         });
-        loadingTimer.start();
+        textAnimationTimer.start();
 
-        // timer for blinking stars
+        // Blinking stars
         starTimer = new Timer(150, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,16 +62,25 @@ public class GameIntroScreen extends JPanel {
         });
         starTimer.start();
 
-        // timer for character animation (flipping left and right)
-        characterTimer = new Timer(500, new ActionListener() {
+        // Timer for background animation (cycling through images)
+        backgroundTimer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                facingLeft = !facingLeft;
-                currentCharacter = facingLeft ? characterLeft : characterRight;
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % 4; // Cycle through 0-3
                 repaint();
             }
         });
-        characterTimer.start();
+        backgroundTimer.start();
+
+        // loading completion
+        loadingTimer = new Timer(10000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((Timer) e.getSource()).stop();
+                startTransition();
+            }
+        });
+        loadingTimer.start();
     }
 
     private void startTransition() {
@@ -110,19 +115,9 @@ public class GameIntroScreen extends JPanel {
 
     private void transitionToNextScreen() {
         parentFrame.getContentPane().removeAll();
-        parentFrame.getContentPane().add(new GameMainScreen(parentFrame));
+        parentFrame.getContentPane().add(new GameMainScreen(parentFrame, backgrounds));
         parentFrame.revalidate();
         parentFrame.repaint();
-    }
-
-    private Image createMirroredImage(Image original) {
-        int width = original.getWidth(null);
-        int height = original.getHeight(null);
-        BufferedImage mirrored = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = mirrored.createGraphics();
-        g2d.drawImage(original, width, 0, -width, height, null);
-        g2d.dispose();
-        return mirrored;
     }
 
     private void playBackgroundMusic() {
@@ -142,33 +137,27 @@ public class GameIntroScreen extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+
+        // first background image (UI)
+        g2d.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
+
+        // drawing blinking stars
         g2d.setColor(new Color(255, 255, 255, starAlpha));
         for (int i = 0; i < 20; i++) {
             int x = (int) (Math.random() * getWidth());
             int y = (int) (Math.random() * getHeight());
             g2d.fillOval(x, y, 3, 3);
         }
-        int barWidth = 288;
-        int barHeight = 23;
-        int barX = getWidth() / 2 - barWidth / 2;
-        int barY = getHeight() - 100;
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(barX, barY, barWidth, barHeight);
-        g2d.setColor(Color.GREEN);
-        g2d.fillRect(barX, barY, (loadingProgress * barWidth) / 100, barHeight);
+
+        // Draw dynamic loading text
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Lucida Console", Font.BOLD, 16));
-        String loadingText = "  Loading...";
         int textWidth = g2d.getFontMetrics().stringWidth(loadingText);
-        g2d.drawString(loadingText, getWidth() / 2 - textWidth / 2, barY + barHeight + 20);
-        int charWidth = currentCharacter.getWidth(null) / 2;
-        int charHeight = currentCharacter.getHeight(null) / 2;
-        int charX = getWidth() / 2 - charWidth / 2 + 2;
-        int charY = barY - charHeight - 20;
-        g2d.drawImage(currentCharacter, charX, charY, charWidth, charHeight, this);
+        int textX = getWidth() / 2 - textWidth / 2;
+        int textY = getHeight() - 100;
+        g2d.drawString(loadingText, textX, textY);
 
-        // fade overlay when transitioning
+        // Fade overlay when transitioning
         if (transitioning) {
             g2d.setColor(new Color(0, 0, 0, fadeAlpha));
             g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -176,24 +165,26 @@ public class GameIntroScreen extends JPanel {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("The Amazing Adventures of Sophia");
+        JFrame frame = new JFrame("The Amazing Adventures");
         GameIntroScreen panel = new GameIntroScreen(frame);
         frame.add(panel);
-        frame.setSize(800, 600);
+        frame.setSize(384, 265);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 }
 
 class GameMainScreen extends JPanel {
-    private Image mainBackground;
+    private Image[] backgrounds;
+    private Timer backgroundTimer; // Timer for cycling through background images
+    private int currentBackgroundIndex = 0; // Index to track the current background image
     private JButton startButton;
     private JButton quitButton;
     private JFrame parentFrame;
 
-    public GameMainScreen(JFrame parentFrame) {
+    public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
-        mainBackground = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/ui inspo two.png").getImage();
+        this.backgrounds = backgrounds;
 
         // Load button images
         ImageIcon startIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button.png");
@@ -209,24 +200,33 @@ class GameMainScreen extends JPanel {
         quitButton.setBorderPainted(false);
         quitButton.setContentAreaFilled(false);
 
-        // button positions
-        setLayout(null); // Use absolute positioning
-        int buttonWidth = startIcon.getIconWidth();
-        int buttonHeight = startIcon.getIconHeight();
-        int startX = (708 - buttonWidth) / 1; // Center horizontally
-        int startY = (600 - buttonHeight * 2 - 10) / 2 + 150; // Position a bit lower
-        int quitX = startX;
-        int quitY = startY + buttonHeight + 10; // Space between buttons
+        // Use a BoxLayout to center the buttons vertically
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        startButton.setBounds(startX, startY, buttonWidth, buttonHeight);
-        quitButton.setBounds(quitX, quitY, buttonWidth, buttonHeight);
+        // Add rigid area to push buttons to the center
+        add(Box.createVerticalGlue());
 
-        // adding action listeners
+        // Create a panel to hold the buttons and center them horizontally
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setOpaque(false);
+
+        buttonPanel.add(startButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 0))); // Space between buttons
+        buttonPanel.add(quitButton);
+
+        // Center the button panel horizontally
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        add(buttonPanel);
+        add(Box.createVerticalGlue());
+
+        // action listeners
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                playClickSound(); // Play click sound effect
-                // Start game logic here
+                playClickSound();
+                // start of game logic
                 JOptionPane.showMessageDialog(parentFrame, "Game Started!");
             }
         });
@@ -234,20 +234,26 @@ class GameMainScreen extends JPanel {
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                playClickSound(); // Play click sound effect
-                System.exit(0); // Exit the game
+                playClickSound();
+                System.exit(0); // game exit
             }
         });
 
-        // adding buttons to the panel
-        add(startButton);
-        add(quitButton);
+        // Timer for background animation (cycling through images)
+        backgroundTimer = new Timer(200, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % 4; // Cycle through 0-3
+                repaint();
+            }
+        });
+        backgroundTimer.start();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(mainBackground, 0, 0, getWidth(), getHeight(), this);
+        g.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
     }
 
     private void playClickSound() {
@@ -256,7 +262,7 @@ class GameMainScreen extends JPanel {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clickSound = AudioSystem.getClip();
             clickSound.open(audioIn);
-            clickSound.start(); // Play the click sound effect
+            clickSound.start(); // click sound effect
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
