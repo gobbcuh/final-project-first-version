@@ -17,8 +17,6 @@ public class GameIntroScreen extends JPanel {
     private boolean fadeOut = true;
     private Clip backgroundMusic;
     private JFrame parentFrame;
-    private int fadeAlpha = 0; // fade transition
-    private boolean transitioning = false; // To control the transition state
     private int currentBackgroundIndex = 0; // Index to track the current background image
     private String loadingText = "Loading";
     private int dotCount = 0;
@@ -77,40 +75,10 @@ public class GameIntroScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ((Timer) e.getSource()).stop();
-                startTransition();
+                transitionToNextScreen();
             }
         });
         loadingTimer.start();
-    }
-
-    private void startTransition() {
-        transitioning = true;
-        Timer fadeTimer = new Timer(10, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (fadeAlpha < 255) {
-                    fadeAlpha += 5; // fade opacity
-                    repaint();
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    playTransitionSound(); // transition sound effect
-                    transitionToNextScreen();
-                }
-            }
-        });
-        fadeTimer.start();
-    }
-
-    private void playTransitionSound() {
-        try {
-            File soundFile = new File("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sound-effect1.wav");
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-            Clip transitionSound = AudioSystem.getClip();
-            transitionSound.open(audioIn);
-            transitionSound.start(); // sound effect 1
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
     }
 
     private void transitionToNextScreen() {
@@ -156,12 +124,6 @@ public class GameIntroScreen extends JPanel {
         int textX = getWidth() / 2 - textWidth / 2;
         int textY = getHeight() - 100;
         g2d.drawString(loadingText, textX, textY);
-
-        // Fade overlay when transitioning
-        if (transitioning) {
-            g2d.setColor(new Color(0, 0, 0, fadeAlpha));
-            g2d.fillRect(0, 0, getWidth(), getHeight());
-        }
     }
 
     public static void main(String[] args) {
@@ -178,66 +140,11 @@ class GameMainScreen extends JPanel {
     private Image[] backgrounds;
     private Timer backgroundTimer; // Timer for cycling through background images
     private int currentBackgroundIndex = 0; // Index to track the current background image
-    private JButton startButton;
-    private JButton quitButton;
     private JFrame parentFrame;
 
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
         this.backgrounds = backgrounds;
-
-        // Load button images
-        ImageIcon startIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button.png");
-        ImageIcon quitIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button.png");
-
-        // Create buttons with images
-        startButton = new JButton(startIcon);
-        quitButton = new JButton(quitIcon);
-
-        // Remove borders and background
-        startButton.setBorderPainted(false);
-        startButton.setContentAreaFilled(false);
-        quitButton.setBorderPainted(false);
-        quitButton.setContentAreaFilled(false);
-
-        // Use a BoxLayout to center the buttons vertically
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        // Add rigid area to push buttons to the center
-        add(Box.createVerticalGlue());
-
-        // Create a panel to hold the buttons and center them horizontally
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setOpaque(false);
-
-        buttonPanel.add(startButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 0))); // Space between buttons
-        buttonPanel.add(quitButton);
-
-        // Center the button panel horizontally
-        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        add(buttonPanel);
-        add(Box.createVerticalGlue());
-
-        // action listeners
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playClickSound();
-                // start of game logic
-                JOptionPane.showMessageDialog(parentFrame, "Game Started!");
-            }
-        });
-
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playClickSound();
-                System.exit(0); // game exit
-            }
-        });
 
         // Timer for background animation (cycling through images)
         backgroundTimer = new Timer(200, new ActionListener() {
@@ -254,17 +161,5 @@ class GameMainScreen extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
-    }
-
-    private void playClickSound() {
-        try {
-            File soundFile = new File("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-sound-effect.wav");
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-            Clip clickSound = AudioSystem.getClip();
-            clickSound.open(audioIn);
-            clickSound.start(); // click sound effect
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
     }
 }
