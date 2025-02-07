@@ -1,4 +1,4 @@
-package finalProject.com; // game intro to main menu draft
+package finalProject.com; // game intro to main menu draft 322
 
 import javax.swing.*;
 import java.awt.*;
@@ -183,6 +183,9 @@ public class GameIntroScreen extends JPanel {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Play the click sound effect
+                playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
+
                 // Handle start button click
                 transitionToNextScreen();
             }
@@ -191,6 +194,9 @@ public class GameIntroScreen extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Play the click sound effect
+                playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
+
                 // Handle exit button click
                 System.exit(0);
             }
