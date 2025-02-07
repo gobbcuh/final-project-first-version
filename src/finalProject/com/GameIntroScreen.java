@@ -24,6 +24,8 @@ public class GameIntroScreen extends JPanel {
     private boolean isLastTextDisplayed = false;
     private int dotCount = 0; // Tracks the number of dots displayed
     private final int maxDots = 3; // Maximum number of dots to display
+    private boolean buttonsVisible = false; // Flag to indicate if buttons are visible
+    private float buttonScale = 0.1f; // Initial scale for zoom-out animation
 
     public GameIntroScreen(JFrame frame) {
         this.parentFrame = frame;
@@ -105,13 +107,30 @@ public class GameIntroScreen extends JPanel {
     }
 
     private void showButtons() {
+        buttonsVisible = true; // Set the flag to true when buttons are shown
+
+        // Play the sound effect when buttons show up
+        playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sound-effect1.wav");
+
         // Load the button images
         ImageIcon startButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button.png");
         ImageIcon exitButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button.png");
 
-        // Create the buttons
-        JButton startButton = new JButton(startButtonIcon);
-        JButton exitButton = new JButton(exitButtonIcon);
+        // Increase the size of the button images
+        Image startButtonImage = startButtonIcon.getImage().getScaledInstance(
+                startButtonIcon.getIconWidth() + 15, // Increase width by 20 pixels
+                startButtonIcon.getIconHeight() + 5, // Increase height by 10 pixels
+                Image.SCALE_SMOOTH
+        );
+        Image exitButtonImage = exitButtonIcon.getImage().getScaledInstance(
+                exitButtonIcon.getIconWidth() + 15, // Increase width by 20 pixels
+                exitButtonIcon.getIconHeight() + 5, // Increase height by 10 pixels
+                Image.SCALE_SMOOTH
+        );
+
+        // Create the buttons with the resized images
+        JButton startButton = new JButton(new ImageIcon(startButtonImage));
+        JButton exitButton = new JButton(new ImageIcon(exitButtonImage));
 
         // Remove borders and backgrounds from the buttons
         startButton.setBorderPainted(false);
@@ -119,15 +138,46 @@ public class GameIntroScreen extends JPanel {
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(false);
 
-        // Set button positions
-        int buttonWidth = startButtonIcon.getIconWidth();
-        int buttonHeight = startButtonIcon.getIconHeight();
+        // Set initial button positions (centered)
+        int buttonWidth = startButton.getIcon().getIconWidth();
+        int buttonHeight = startButton.getIcon().getIconHeight();
         int x = (getWidth() - buttonWidth) / 2; // Center horizontally
-        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2; // Center vertically with spacing
-        int exitY = startY + buttonHeight + 5; // 10 pixels spacing between buttons
+        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 53; // Lower the buttons by 50 pixels
+        int exitY = startY + buttonHeight + 1; // Maintain the same spacing between buttons
 
         startButton.setBounds(x, startY, buttonWidth, buttonHeight);
         exitButton.setBounds(x, exitY, buttonWidth, buttonHeight);
+
+        // Add buttons to the panel
+        setLayout(null); // Use absolute positioning
+        add(startButton);
+        add(exitButton);
+
+        // Timer for zoom-out animation
+        Timer zoomTimer = new Timer(16, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (buttonScale < 1.0f) {
+                    buttonScale += 0.05f; // Gradually increase the scale
+                    startButton.setBounds(
+                            (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                            (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
+                            (int) (buttonWidth * buttonScale),
+                            (int) (buttonHeight * buttonScale)
+                    );
+                    exitButton.setBounds(
+                            (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                            (int) (exitY + (buttonHeight * (1 - buttonScale)) / 2),
+                            (int) (buttonWidth * buttonScale),
+                            (int) (buttonHeight * buttonScale)
+                    );
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop(); // Stop the timer when animation is complete
+                }
+            }
+        });
+        zoomTimer.start();
 
         // Add action listeners to the buttons
         startButton.addActionListener(new ActionListener() {
@@ -145,11 +195,6 @@ public class GameIntroScreen extends JPanel {
                 System.exit(0);
             }
         });
-
-        // Add buttons to the panel
-        setLayout(null); // Use absolute positioning
-        add(startButton);
-        add(exitButton);
 
         // Repaint the panel to show the buttons
         repaint();
@@ -175,6 +220,18 @@ public class GameIntroScreen extends JPanel {
         }
     }
 
+    private void playSoundEffect(String filePath) {
+        try {
+            File soundFile = new File(filePath);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start(); // Play the sound effect
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -191,31 +248,33 @@ public class GameIntroScreen extends JPanel {
             g2d.fillOval(x, y, 3, 3);
         }
 
-        // Draw loading text with black border
-        String loadingText = loadingTexts[currentLoadingTextIndex];
-        String dots = ""; // Build the dots string
-        for (int i = 0; i < dotCount; i++) {
-            dots += " .";
-        }
-        String fullText = loadingText + dots; // Combine text and dots
-        g2d.setFont(new Font("Lucida Console", Font.BOLD, 16)); // Smaller font size
-        int textWidth = g2d.getFontMetrics().stringWidth(fullText);
-        int x = (getWidth() - textWidth) / 2;
-        int y = getHeight() - 40; // Adjusted position for better visibility
+        // Draw loading text with black border only if buttons are not visible
+        if (!buttonsVisible) {
+            String loadingText = loadingTexts[currentLoadingTextIndex];
+            String dots = ""; // Build the dots string
+            for (int i = 0; i < dotCount; i++) {
+                dots += " .";
+            }
+            String fullText = loadingText + dots; // Combine text and dots
+            g2d.setFont(new Font("Lucida Console", Font.BOLD, 16)); // Smaller font size
+            int textWidth = g2d.getFontMetrics().stringWidth(fullText);
+            int x = (getWidth() - textWidth) / 2;
+            int y = getHeight() - 40; // Adjusted position for better visibility
 
-        // Draw black border by drawing the text multiple times with slight offsets
-        g2d.setColor(Color.BLACK);
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (i != 0 || j != 0) { // Skip the center position
-                    g2d.drawString(fullText, x + i, y + j);
+            // Draw black border by drawing the text multiple times with slight offsets
+            g2d.setColor(Color.BLACK);
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i != 0 || j != 0) { // Skip the center position
+                        g2d.drawString(fullText, x + i, y + j);
+                    }
                 }
             }
-        }
 
-        // Draw the white text on top
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(fullText, x, y);
+            // Draw the white text on top
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(fullText, x, y);
+        }
     }
 
     public static void main(String[] args) {
