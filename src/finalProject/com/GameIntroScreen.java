@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class GameIntroScreen extends JPanel {
     private Image[] backgrounds; // loading background images
-    private Timer loadingTimer;
     private Timer starTimer;
     private Timer backgroundTimer; // cycling through background images
     private int starAlpha = 255;
@@ -18,9 +17,6 @@ public class GameIntroScreen extends JPanel {
     private Clip backgroundMusic;
     private JFrame parentFrame;
     private int currentBackgroundIndex = 0; // Index to track the current background image
-    private String loadingText = "Loading";
-    private int dotCount = 0;
-    private Timer textAnimationTimer; // timer for loading text animation
 
     public GameIntroScreen(JFrame frame) {
         this.parentFrame = frame;
@@ -32,17 +28,6 @@ public class GameIntroScreen extends JPanel {
         }
 
         playBackgroundMusic();
-
-        // timer for loading text animation
-        textAnimationTimer = new Timer(500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dotCount = (dotCount + 1) % 6; // Cycle through 0 to 5 dots
-                loadingText = "Loading" + ".".repeat(dotCount); // Update loading text
-                repaint();
-            }
-        });
-        textAnimationTimer.start();
 
         // Blinking stars
         starTimer = new Timer(150, new ActionListener() {
@@ -69,16 +54,6 @@ public class GameIntroScreen extends JPanel {
             }
         });
         backgroundTimer.start();
-
-        // loading completion
-        loadingTimer = new Timer(10000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ((Timer) e.getSource()).stop();
-                transitionToNextScreen();
-            }
-        });
-        loadingTimer.start();
     }
 
     private void transitionToNextScreen() {
@@ -116,14 +91,6 @@ public class GameIntroScreen extends JPanel {
             int y = (int) (Math.random() * getHeight());
             g2d.fillOval(x, y, 3, 3);
         }
-
-        // Draw dynamic loading text
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Lucida Console", Font.BOLD, 16));
-        int textWidth = g2d.getFontMetrics().stringWidth(loadingText);
-        int textX = getWidth() / 2 - textWidth / 2;
-        int textY = getHeight() - 100;
-        g2d.drawString(loadingText, textX, textY);
     }
 
     public static void main(String[] args) {
