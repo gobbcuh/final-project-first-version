@@ -1,4 +1,4 @@
-package finalProject.com; // game intro to main menu draft 322
+package finalProject.com; // game intro to main menu draft 334
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class GameIntroScreen extends JPanel {
     private int dotCount = 0; // Tracks the number of dots displayed
     private final int maxDots = 3; // Maximum number of dots to display
     private boolean buttonsVisible = false; // Flag to indicate if buttons are visible
-    private float buttonScale = 0.1f; // Initial scale for zoom-out animation
+    private float buttonScale = 0.1f; // Initial scale for zoom-in animation
 
     public GameIntroScreen(JFrame frame) {
         this.parentFrame = frame;
@@ -145,15 +145,27 @@ public class GameIntroScreen extends JPanel {
         int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 53; // Lower the buttons by 50 pixels
         int exitY = startY + buttonHeight + 1; // Maintain the same spacing between buttons
 
-        startButton.setBounds(x, startY, buttonWidth, buttonHeight);
-        exitButton.setBounds(x, exitY, buttonWidth, buttonHeight);
+        // Set initial scale for zoom-in animation
+        buttonScale = 0.1f; // Start from a smaller scale
+        startButton.setBounds(
+                (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
+                (int) (buttonWidth * buttonScale),
+                (int) (buttonHeight * buttonScale)
+        );
+        exitButton.setBounds(
+                (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                (int) (exitY + (buttonHeight * (1 - buttonScale)) / 2),
+                (int) (buttonWidth * buttonScale),
+                (int) (buttonHeight * buttonScale)
+        );
 
         // Add buttons to the panel
         setLayout(null); // Use absolute positioning
         add(startButton);
         add(exitButton);
 
-        // Timer for zoom-out animation
+        // Timer for zoom-in animation
         Timer zoomTimer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
