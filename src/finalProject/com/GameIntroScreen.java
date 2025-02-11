@@ -1,4 +1,4 @@
-package finalProject.com; // game intro to main menu draft 334
+package finalProject.com; // draft 399
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,28 +9,28 @@ import java.io.File;
 import java.io.IOException;
 
 public class GameIntroScreen extends JPanel {
-    private Image[] backgrounds; // loading background images
+    private Image[] backgrounds;
     private Timer starTimer;
-    private Timer backgroundTimer; // cycling through background images
-    private Timer loadingTextTimer; // Timer for loading text animation
-    private Timer dotAnimationTimer; // Timer for dot animation
+    private Timer backgroundTimer;
+    private Timer loadingTextTimer;
+    private Timer dotAnimationTimer;
     private int starAlpha = 255;
     private boolean fadeOut = true;
     private Clip backgroundMusic;
     private JFrame parentFrame;
-    private int currentBackgroundIndex = 0; // Index to track the current background image
+    private int currentBackgroundIndex = 0;
     private String[] loadingTexts = {"Welcome to the Game", "Please wait for a moment", "Starting the Game"};
     private int currentLoadingTextIndex = 0;
     private boolean isLastTextDisplayed = false;
-    private int dotCount = 0; // Tracks the number of dots displayed
-    private final int maxDots = 3; // Maximum number of dots to display
-    private boolean buttonsVisible = false; // Flag to indicate if buttons are visible
-    private float buttonScale = 0.1f; // Initial scale for zoom-in animation
+    private int dotCount = 0;
+    private final int maxDots = 3;
+    private boolean buttonsVisible = false;
+    private float buttonScale = 0.1f;
+    private float fadeAlpha = 1.0f;
 
     public GameIntroScreen(JFrame frame) {
         this.parentFrame = frame;
 
-        // loading the background images
         backgrounds = new Image[4];
         for (int i = 0; i < 4; i++) {
             backgrounds[i] = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/loading-bg" + (i + 1) + ".png").getImage();
@@ -38,7 +38,6 @@ public class GameIntroScreen extends JPanel {
 
         playBackgroundMusic();
 
-        // Blinking stars
         starTimer = new Timer(150, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -54,99 +53,87 @@ public class GameIntroScreen extends JPanel {
         });
         starTimer.start();
 
-        // Timer for background animation (cycling through images)
         backgroundTimer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentBackgroundIndex = (currentBackgroundIndex + 1) % 4; // Cycle through 0-3
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % 4;
                 repaint();
             }
         });
         backgroundTimer.start();
 
-        // Timer for loading text animation
-        loadingTextTimer = new Timer(3000, new ActionListener() { // 3 seconds per text
+        loadingTextTimer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!isLastTextDisplayed) {
                     currentLoadingTextIndex = (currentLoadingTextIndex + 1) % loadingTexts.length;
                     if (currentLoadingTextIndex == loadingTexts.length - 1) {
                         isLastTextDisplayed = true;
-                        loadingTextTimer.stop(); // Stop the loading text timer
-                        dotAnimationTimer.stop(); // Stop the dot animation timer
-                        // Start a new timer to pause for 5 seconds on the last text
+                        loadingTextTimer.stop();
+                        dotAnimationTimer.stop();
                         Timer pauseTimer = new Timer(5000, new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                showButtons(); // Show buttons after the pause
+                                showButtons();
                             }
                         });
-                        pauseTimer.setRepeats(false); // Ensure the timer only runs once
+                        pauseTimer.setRepeats(false);
                         pauseTimer.start();
                     }
-                    dotCount = 0; // Reset dot count for the new text
-                    dotAnimationTimer.restart(); // Restart the dot animation timer
+                    dotCount = 0;
+                    dotAnimationTimer.restart();
                     repaint();
                 }
             }
         });
         loadingTextTimer.start();
 
-        // Timer for dot animation
-        dotAnimationTimer = new Timer(800, new ActionListener() { // 0.8 seconds per dot
+        dotAnimationTimer = new Timer(800, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (dotCount < maxDots) {
-                    dotCount++; // Increment dot count
+                    dotCount++;
                     repaint();
                 } else {
-                    dotAnimationTimer.stop(); // Stop the timer when all dots are displayed
+                    dotAnimationTimer.stop();
                 }
             }
         });
     }
 
     private void showButtons() {
-        buttonsVisible = true; // Set the flag to true when buttons are shown
-
-        // Play the sound effect when buttons show up
+        buttonsVisible = true;
         playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sound-effect1.wav");
 
-        // Load the button images
         ImageIcon startButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button.png");
         ImageIcon exitButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button.png");
 
-        // Increase the size of the button images
         Image startButtonImage = startButtonIcon.getImage().getScaledInstance(
-                startButtonIcon.getIconWidth() + 15, // Increase width by 20 pixels
-                startButtonIcon.getIconHeight() + 5, // Increase height by 10 pixels
+                startButtonIcon.getIconWidth() + 15,
+                startButtonIcon.getIconHeight() + 5,
                 Image.SCALE_SMOOTH
         );
         Image exitButtonImage = exitButtonIcon.getImage().getScaledInstance(
-                exitButtonIcon.getIconWidth() + 15, // Increase width by 20 pixels
-                exitButtonIcon.getIconHeight() + 5, // Increase height by 10 pixels
+                exitButtonIcon.getIconWidth() + 15,
+                exitButtonIcon.getIconHeight() + 5,
                 Image.SCALE_SMOOTH
         );
 
-        // Create the buttons with the resized images
         JButton startButton = new JButton(new ImageIcon(startButtonImage));
         JButton exitButton = new JButton(new ImageIcon(exitButtonImage));
 
-        // Remove borders and backgrounds from the buttons
         startButton.setBorderPainted(false);
         startButton.setContentAreaFilled(false);
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(false);
 
-        // Set initial button positions (centered)
         int buttonWidth = startButton.getIcon().getIconWidth();
         int buttonHeight = startButton.getIcon().getIconHeight();
-        int x = (getWidth() - buttonWidth) / 2; // Center horizontally
-        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 53; // Lower the buttons by 50 pixels
-        int exitY = startY + buttonHeight + 1; // Maintain the same spacing between buttons
+        int x = (getWidth() - buttonWidth) / 2;
+        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 53;
+        int exitY = startY + buttonHeight + 1;
 
-        // Set initial scale for zoom-in animation
-        buttonScale = 0.1f; // Start from a smaller scale
+        buttonScale = 0.1f;
         startButton.setBounds(
                 (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
                 (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
@@ -160,17 +147,15 @@ public class GameIntroScreen extends JPanel {
                 (int) (buttonHeight * buttonScale)
         );
 
-        // Add buttons to the panel
-        setLayout(null); // Use absolute positioning
+        setLayout(null);
         add(startButton);
         add(exitButton);
 
-        // Timer for zoom-in animation
         Timer zoomTimer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (buttonScale < 1.0f) {
-                    buttonScale += 0.05f; // Gradually increase the scale
+                    buttonScale += 0.05f;
                     startButton.setBounds(
                             (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
                             (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
@@ -185,20 +170,16 @@ public class GameIntroScreen extends JPanel {
                     );
                     repaint();
                 } else {
-                    ((Timer) e.getSource()).stop(); // Stop the timer when animation is complete
+                    ((Timer) e.getSource()).stop();
                 }
             }
         });
         zoomTimer.start();
 
-        // Add action listeners to the buttons
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Play the click sound effect
                 playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
-
-                // Handle start button click
                 transitionToNextScreen();
             }
         });
@@ -206,23 +187,33 @@ public class GameIntroScreen extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Play the click sound effect
                 playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
-
-                // Handle exit button click
                 System.exit(0);
             }
         });
 
-        // Repaint the panel to show the buttons
         repaint();
     }
 
     private void transitionToNextScreen() {
-        parentFrame.getContentPane().removeAll();
-        parentFrame.getContentPane().add(new GameMainScreen(parentFrame, backgrounds));
-        parentFrame.revalidate();
-        parentFrame.repaint();
+        Timer fadeTimer = new Timer(16, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (fadeAlpha > 0) {
+                    fadeAlpha -= 0.05f;
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                    Image bgFirst = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first.png").getImage();
+                    GameMainScreen gameMainScreen = new GameMainScreen(parentFrame, new Image[]{bgFirst});
+                    parentFrame.getContentPane().removeAll();
+                    parentFrame.getContentPane().add(gameMainScreen);
+                    parentFrame.revalidate();
+                    parentFrame.repaint();
+                }
+            }
+        });
+        fadeTimer.start();
     }
 
     private void playBackgroundMusic() {
@@ -244,7 +235,7 @@ public class GameIntroScreen extends JPanel {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start(); // Play the sound effect
+            clip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -254,42 +245,33 @@ public class GameIntroScreen extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
-        // first background image (UI)
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeAlpha));
         g2d.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
-
-        // drawing blinking stars
         g2d.setColor(new Color(255, 255, 255, starAlpha));
         for (int i = 0; i < 20; i++) {
             int x = (int) (Math.random() * getWidth());
             int y = (int) (Math.random() * getHeight());
             g2d.fillOval(x, y, 3, 3);
         }
-
-        // Draw loading text with black border only if buttons are not visible
         if (!buttonsVisible) {
             String loadingText = loadingTexts[currentLoadingTextIndex];
-            String dots = ""; // Build the dots string
+            String dots = "";
             for (int i = 0; i < dotCount; i++) {
                 dots += " .";
             }
-            String fullText = loadingText + dots; // Combine text and dots
-            g2d.setFont(new Font("Lucida Console", Font.BOLD, 16)); // Smaller font size
+            String fullText = loadingText + dots;
+            g2d.setFont(new Font("Lucida Console", Font.BOLD, 16));
             int textWidth = g2d.getFontMetrics().stringWidth(fullText);
             int x = (getWidth() - textWidth) / 2;
-            int y = getHeight() - 40; // Adjusted position for better visibility
-
-            // Draw black border by drawing the text multiple times with slight offsets
+            int y = getHeight() - 40;
             g2d.setColor(Color.BLACK);
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    if (i != 0 || j != 0) { // Skip the center position
+                    if (i != 0 || j != 0) {
                         g2d.drawString(fullText, x + i, y + j);
                     }
                 }
             }
-
-            // Draw the white text on top
             g2d.setColor(Color.WHITE);
             g2d.drawString(fullText, x, y);
         }
@@ -307,28 +289,111 @@ public class GameIntroScreen extends JPanel {
 
 class GameMainScreen extends JPanel {
     private Image[] backgrounds;
-    private Timer backgroundTimer; // Timer for cycling through background images
-    private int currentBackgroundIndex = 0; // Index to track the current background image
+    private Timer backgroundTimer;
+    private int currentBackgroundIndex = 0;
     private JFrame parentFrame;
+    private Image queenBinaryImage;
+    private float queenScale = 0.1f; // Initial scale for the queen's image
+    private Timer queenAnimationTimer; // Timer for the queen's animation
+    private int sparkleAlpha = 255; // Alpha value for sparkles
+    private boolean sparkleFadeOut = true; // Sparkle fade direction
 
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
         this.backgrounds = backgrounds;
+        queenBinaryImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-binary.png").getImage();
 
-        // Timer for background animation (cycling through images)
         backgroundTimer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentBackgroundIndex = (currentBackgroundIndex + 1) % 4; // Cycle through 0-3
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % backgrounds.length;
                 repaint();
             }
         });
         backgroundTimer.start();
+
+        // Timer for the queen's animation
+        queenAnimationTimer = new Timer(50, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (queenScale < 1.0f) {
+                    queenScale += 0.02f; // Gradually increase the scale
+                }
+
+                // Sparkle fade animation
+                if (sparkleFadeOut) {
+                    sparkleAlpha -= 10;
+                    if (sparkleAlpha <= 200) sparkleFadeOut = false; // Adjusted minimum alpha to 100
+                } else {
+                    sparkleAlpha += 10;
+                    if (sparkleAlpha >= 255) sparkleFadeOut = true;
+                }
+                repaint();
+            }
+        });
+        queenAnimationTimer.start();
+
+        // Play the queen's entrance sound effect
+        playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-appear-sound.wav");
+    }
+
+    private void playSoundEffect(String filePath) {
+        try {
+            File soundFile = new File(filePath);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
+
+        int queenWidth = queenBinaryImage.getWidth(this);
+        int queenHeight = queenBinaryImage.getHeight(this);
+        int screenHeight = getHeight();
+        int screenWidth = getWidth();
+
+        int newQueenHeight = (int) (screenHeight / 3 * queenScale);
+        int newQueenWidth = (int) ((double) queenWidth / queenHeight * newQueenHeight);
+
+        int x = (screenWidth - newQueenWidth) / 2;
+        int y = (screenHeight - newQueenHeight) / 2 + 50;
+
+        // Draw the queen's image
+        g.drawImage(queenBinaryImage, x, y, newQueenWidth, newQueenHeight, this);
+
+        // Draw sparkles around the queen
+        Graphics2D g2d = (Graphics2D) g;
+        for (int i = 0; i < 20; i++) { // Increase the number of sparkles
+            // Randomly position sparkles around the queen (but not inside her body)
+            int sparkleX, sparkleY;
+            do {
+                sparkleX = x + (int) (Math.random() * (newQueenWidth + 100)) - 50; // Wider scatter area
+                sparkleY = y + (int) (Math.random() * (newQueenHeight + 100)) - 50; // Wider scatter area
+            } while (sparkleX >= x && sparkleX <= x + newQueenWidth && sparkleY >= y && sparkleY <= y + newQueenHeight);
+
+            // Randomize sparkle size
+            int sparkleSize = 5 + (int) (Math.random() * 5); // Vary size between 5 and 10
+
+            // Use a solid white color with the current alpha value
+            g2d.setColor(new Color(255, 255, 255, sparkleAlpha));
+
+            // Draw the sparkle as a star shape
+            int[] xPoints = {
+                    sparkleX, sparkleX + sparkleSize / 4, sparkleX + sparkleSize / 2, sparkleX + sparkleSize / 4, sparkleX,
+                    sparkleX - sparkleSize / 4, sparkleX - sparkleSize / 2, sparkleX - sparkleSize / 4
+            };
+            int[] yPoints = {
+                    sparkleY - sparkleSize / 2, sparkleY - sparkleSize / 4, sparkleY, sparkleY + sparkleSize / 4, sparkleY + sparkleSize / 2,
+                    sparkleY + sparkleSize / 4, sparkleY, sparkleY - sparkleSize / 4
+            };
+            g2d.fillPolygon(xPoints, yPoints, 8);
+        }
     }
 }
