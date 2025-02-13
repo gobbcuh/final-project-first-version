@@ -1,4 +1,4 @@
-package finalProject.com; // draft 399
+package finalProject.com; // draft 390
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,13 +109,13 @@ public class GameIntroScreen extends JPanel {
         ImageIcon exitButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button.png");
 
         Image startButtonImage = startButtonIcon.getImage().getScaledInstance(
-                startButtonIcon.getIconWidth() + 15,
-                startButtonIcon.getIconHeight() + 5,
+                startButtonIcon.getIconWidth() + 100,
+                startButtonIcon.getIconHeight() + 40,
                 Image.SCALE_SMOOTH
         );
         Image exitButtonImage = exitButtonIcon.getImage().getScaledInstance(
-                exitButtonIcon.getIconWidth() + 15,
-                exitButtonIcon.getIconHeight() + 5,
+                exitButtonIcon.getIconWidth() + 100,
+                exitButtonIcon.getIconHeight() + 40,
                 Image.SCALE_SMOOTH
         );
 
@@ -130,8 +130,8 @@ public class GameIntroScreen extends JPanel {
         int buttonWidth = startButton.getIcon().getIconWidth();
         int buttonHeight = startButton.getIcon().getIconHeight();
         int x = (getWidth() - buttonWidth) / 2;
-        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 53;
-        int exitY = startY + buttonHeight + 1;
+        int startY = (getHeight() - (2 * buttonHeight + 10)) / 2 + 70;
+        int exitY = startY + buttonHeight + 10;
 
         buttonScale = 0.1f;
         startButton.setBounds(
@@ -196,24 +196,15 @@ public class GameIntroScreen extends JPanel {
     }
 
     private void transitionToNextScreen() {
-        Timer fadeTimer = new Timer(16, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (fadeAlpha > 0) {
-                    fadeAlpha -= 0.05f;
-                    repaint();
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    Image bgFirst = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first.png").getImage();
-                    GameMainScreen gameMainScreen = new GameMainScreen(parentFrame, new Image[]{bgFirst});
-                    parentFrame.getContentPane().removeAll();
-                    parentFrame.getContentPane().add(gameMainScreen);
-                    parentFrame.revalidate();
-                    parentFrame.repaint();
-                }
-            }
-        });
-        fadeTimer.start();
+        // Stop the fade-out timer if it's running
+        // Instead of using a fade-out animation, directly transition to the next screen
+
+        Image bgFirst = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first.png").getImage();
+        GameMainScreen gameMainScreen = new GameMainScreen(parentFrame, new Image[]{bgFirst});
+        parentFrame.getContentPane().removeAll();
+        parentFrame.getContentPane().add(gameMainScreen);
+        parentFrame.revalidate();
+        parentFrame.repaint();
     }
 
     private void playBackgroundMusic() {
