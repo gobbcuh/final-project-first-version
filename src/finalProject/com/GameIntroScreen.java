@@ -1,4 +1,4 @@
-package finalProject.com; // draft 390
+package finalProject.com; // draft 455
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,6 +107,8 @@ public class GameIntroScreen extends JPanel {
 
         ImageIcon startButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button.png");
         ImageIcon exitButtonIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button.png");
+        ImageIcon startButtonHoverIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/start-button2.png");
+        ImageIcon exitButtonHoverIcon = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/quit-button2.png");
 
         Image startButtonImage = startButtonIcon.getImage().getScaledInstance(
                 startButtonIcon.getIconWidth() + 100,
@@ -118,14 +120,30 @@ public class GameIntroScreen extends JPanel {
                 exitButtonIcon.getIconHeight() + 40,
                 Image.SCALE_SMOOTH
         );
+        Image startButtonHoverImage = startButtonHoverIcon.getImage().getScaledInstance(
+                startButtonHoverIcon.getIconWidth() + 100,
+                startButtonHoverIcon.getIconHeight() + 40,
+                Image.SCALE_SMOOTH
+        );
+        Image exitButtonHoverImage = exitButtonHoverIcon.getImage().getScaledInstance(
+                exitButtonHoverIcon.getIconWidth() + 100,
+                exitButtonHoverIcon.getIconHeight() + 40,
+                Image.SCALE_SMOOTH
+        );
 
         JButton startButton = new JButton(new ImageIcon(startButtonImage));
         JButton exitButton = new JButton(new ImageIcon(exitButtonImage));
+        JButton startButtonHover = new JButton(new ImageIcon(startButtonHoverImage));
+        JButton exitButtonHover = new JButton(new ImageIcon(exitButtonHoverImage));
 
         startButton.setBorderPainted(false);
         startButton.setContentAreaFilled(false);
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(false);
+        startButtonHover.setBorderPainted(false);
+        startButtonHover.setContentAreaFilled(false);
+        exitButtonHover.setBorderPainted(false);
+        exitButtonHover.setContentAreaFilled(false);
 
         int buttonWidth = startButton.getIcon().getIconWidth();
         int buttonHeight = startButton.getIcon().getIconHeight();
@@ -146,10 +164,27 @@ public class GameIntroScreen extends JPanel {
                 (int) (buttonWidth * buttonScale),
                 (int) (buttonHeight * buttonScale)
         );
+        startButtonHover.setBounds(
+                (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
+                (int) (buttonWidth * buttonScale),
+                (int) (buttonHeight * buttonScale)
+        );
+        exitButtonHover.setBounds(
+                (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                (int) (exitY + (buttonHeight * (1 - buttonScale)) / 2),
+                (int) (buttonWidth * buttonScale),
+                (int) (buttonHeight * buttonScale)
+        );
 
         setLayout(null);
         add(startButton);
         add(exitButton);
+        add(startButtonHover);
+        add(exitButtonHover);
+
+        startButtonHover.setVisible(false);
+        exitButtonHover.setVisible(false);
 
         Timer zoomTimer = new Timer(16, new ActionListener() {
             @Override
@@ -168,6 +203,18 @@ public class GameIntroScreen extends JPanel {
                             (int) (buttonWidth * buttonScale),
                             (int) (buttonHeight * buttonScale)
                     );
+                    startButtonHover.setBounds(
+                            (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                            (int) (startY + (buttonHeight * (1 - buttonScale)) / 2),
+                            (int) (buttonWidth * buttonScale),
+                            (int) (buttonHeight * buttonScale)
+                    );
+                    exitButtonHover.setBounds(
+                            (int) (x + (buttonWidth * (1 - buttonScale)) / 2),
+                            (int) (exitY + (buttonHeight * (1 - buttonScale)) / 2),
+                            (int) (buttonWidth * buttonScale),
+                            (int) (buttonHeight * buttonScale)
+                    );
                     repaint();
                 } else {
                     ((Timer) e.getSource()).stop();
@@ -180,7 +227,16 @@ public class GameIntroScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
-                transitionToNextScreen();
+                startButton.setVisible(false);
+                startButtonHover.setVisible(true);
+                Timer hoverTimer = new Timer(200, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        transitionToNextScreen();
+                    }
+                });
+                hoverTimer.setRepeats(false);
+                hoverTimer.start();
             }
         });
 
@@ -188,7 +244,16 @@ public class GameIntroScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/click-intro-button.wav");
-                System.exit(0);
+                exitButton.setVisible(false);
+                exitButtonHover.setVisible(true);
+                Timer hoverTimer = new Timer(200, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(0);
+                    }
+                });
+                hoverTimer.setRepeats(false);
+                hoverTimer.start();
             }
         });
 
