@@ -1,4 +1,4 @@
-package finalProject.com; // draft 487
+package finalProject.com; // draft 523
 
 import javax.swing.*;
 import java.awt.*;
@@ -360,10 +360,19 @@ class GameMainScreen extends JPanel {
     private Timer queenMoveTimer; // Timer for moving the queen to the left
     private boolean queenMoveStarted = false; // Flag to check if the queen has started moving
 
+    private Image introTextBoxImage; // New image for the intro text box
+    private int introTextBoxX; // X position of the intro text box
+    private int introTextBoxY; // Y position of the intro text box
+    private int introTextBoxWidth; // Width of the intro text box
+    private int introTextBoxHeight; // Height of the intro text box
+    private Timer introTextBoxMoveTimer; // Timer for moving the intro text box to the right
+    private boolean introTextBoxVisible = false; // Flag to control visibility of the intro text box
+
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
         this.backgrounds = backgrounds;
         queenBinaryImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-binary.png").getImage();
+        introTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/intro-text-box.png").getImage(); // Load the intro text box image
 
         backgroundTimer = new Timer(200, new ActionListener() {
             @Override
@@ -404,6 +413,11 @@ class GameMainScreen extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 queenMoveStarted = true;
                 queenMoveTimer.start();
+
+                // Set the initial position of the text box to be slightly closer to the middle of the screen
+                introTextBoxX = queenX - introTextBoxWidth / 2; // Start the text box closer to the middle
+                introTextBoxVisible = true; // Make the intro text box visible
+                introTextBoxMoveTimer.start(); // Start the intro text box movement timer
             }
         });
         delayTimer.setRepeats(false);
@@ -413,8 +427,22 @@ class GameMainScreen extends JPanel {
         queenMoveTimer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (queenX > 150) { // Move the queen to the left until she reaches x = 150
+                if (queenX > 200) { // Move the queen to the left until she reaches x = 150
                     queenX -= 5;
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+
+        // Timer for moving the intro text box to the right
+        introTextBoxMoveTimer = new Timer(16, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Stop the intro text box before it reaches the right edge (leave some space)
+                if (introTextBoxX < getWidth() - introTextBoxWidth - 200) { // Adjusted to stop 200 pixels before the right edge
+                    introTextBoxX += 5; // Move the text box to the right
                     repaint();
                 } else {
                     ((Timer) e.getSource()).stop();
@@ -439,6 +467,14 @@ class GameMainScreen extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgrounds[currentBackgroundIndex], 0, 0, getWidth(), getHeight(), this);
+
+        // Draw the intro text box first (behind the queen and sparkles)
+        if (introTextBoxVisible && introTextBoxImage != null) {
+            introTextBoxWidth = introTextBoxImage.getWidth(this);
+            introTextBoxHeight = introTextBoxImage.getHeight(this);
+            introTextBoxY = (getHeight() - introTextBoxHeight) / 2; // Center vertically
+            g.drawImage(introTextBoxImage, introTextBoxX, introTextBoxY, introTextBoxWidth, introTextBoxHeight, this);
+        }
 
         int queenWidth = queenBinaryImage.getWidth(this);
         int queenHeight = queenBinaryImage.getHeight(this);
