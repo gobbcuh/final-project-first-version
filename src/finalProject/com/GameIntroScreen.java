@@ -353,6 +353,12 @@ class GameMainScreen extends JPanel {
     private Timer queenAnimationTimer; // Timer for the queen's animation
     private int sparkleAlpha = 255; // Alpha value for sparkles
     private boolean sparkleFadeOut = true; // Sparkle fade direction
+    private int queenX; // X position of the queen
+    private int queenY; // Y position of the queen
+    private int newQueenWidth; // Width of the queen's image
+    private int newQueenHeight; // Height of the queen's image
+    private Timer queenMoveTimer; // Timer for moving the queen to the left
+    private boolean queenMoveStarted = false; // Flag to check if the queen has started moving
 
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
@@ -391,6 +397,30 @@ class GameMainScreen extends JPanel {
 
         // Play the queen's entrance sound effect
         playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-appear-sound.wav");
+
+        // Timer to delay the queen's movement
+        Timer delayTimer = new Timer(3000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                queenMoveStarted = true;
+                queenMoveTimer.start();
+            }
+        });
+        delayTimer.setRepeats(false);
+        delayTimer.start();
+
+        // Timer for moving the queen to the left
+        queenMoveTimer = new Timer(16, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (queenX > 150) { // Move the queen to the left until she reaches x = 150
+                    queenX -= 5;
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
     }
 
     private void playSoundEffect(String filePath) {
@@ -415,14 +445,16 @@ class GameMainScreen extends JPanel {
         int screenHeight = getHeight();
         int screenWidth = getWidth();
 
-        int newQueenHeight = (int) (screenHeight / 3 * queenScale);
-        int newQueenWidth = (int) ((double) queenWidth / queenHeight * newQueenHeight);
+        newQueenHeight = (int) (screenHeight / 3 * queenScale);
+        newQueenWidth = (int) ((double) queenWidth / queenHeight * newQueenHeight);
 
-        int x = (screenWidth - newQueenWidth) / 2;
-        int y = (screenHeight - newQueenHeight) / 2 + 50;
+        if (!queenMoveStarted) {
+            queenX = (screenWidth - newQueenWidth) / 2;
+            queenY = (screenHeight - newQueenHeight) / 2 + 50;
+        }
 
         // Draw the queen's image
-        g.drawImage(queenBinaryImage, x, y, newQueenWidth, newQueenHeight, this);
+        g.drawImage(queenBinaryImage, queenX, queenY, newQueenWidth, newQueenHeight, this);
 
         // Draw sparkles around the queen
         Graphics2D g2d = (Graphics2D) g;
@@ -430,9 +462,9 @@ class GameMainScreen extends JPanel {
             // Randomly position sparkles around the queen (but not inside her body)
             int sparkleX, sparkleY;
             do {
-                sparkleX = x + (int) (Math.random() * (newQueenWidth + 100)) - 50; // Wider scatter area
-                sparkleY = y + (int) (Math.random() * (newQueenHeight + 100)) - 50; // Wider scatter area
-            } while (sparkleX >= x && sparkleX <= x + newQueenWidth && sparkleY >= y && sparkleY <= y + newQueenHeight);
+                sparkleX = queenX + (int) (Math.random() * (newQueenWidth + 100)) - 50; // Wider scatter area
+                sparkleY = queenY + (int) (Math.random() * (newQueenHeight + 100)) - 50; // Wider scatter area
+            } while (sparkleX >= queenX && sparkleX <= queenX + newQueenWidth && sparkleY >= queenY && sparkleY <= queenY + newQueenHeight);
 
             // Randomize sparkle size
             int sparkleSize = 5 + (int) (Math.random() * 5); // Vary size between 5 and 10
