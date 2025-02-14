@@ -427,7 +427,7 @@ class GameMainScreen extends JPanel {
         queenMoveTimer = new Timer(16, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (queenX > 290) { // Move the queen to the left until she reaches x = 150
+                if (queenX > 280) { // Move the queen to the left until she reaches x = 150
                     queenX -= 5;
                     repaint();
                 } else {
@@ -441,7 +441,7 @@ class GameMainScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Stop the intro text box before it reaches the right edge (leave some space)
-                if (introTextBoxX < getWidth() - introTextBoxWidth - 300) { // Adjusted to stop 200 pixels before the right edge
+                if (introTextBoxX < getWidth() - introTextBoxWidth - 320) { // Adjusted to stop 200 pixels before the right edge
                     introTextBoxX += 5; // Move the text box to the right
                     repaint();
                 } else {
@@ -486,7 +486,7 @@ class GameMainScreen extends JPanel {
 
         if (!queenMoveStarted) {
             queenX = (screenWidth - newQueenWidth) / 2;
-            queenY = (screenHeight - newQueenHeight) / 2 + 50;
+            queenY = (screenHeight - newQueenHeight) / 2 + 30;
         }
 
         // Draw the queen's image
