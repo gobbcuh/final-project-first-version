@@ -570,7 +570,7 @@ class GameMainScreen extends JPanel {
 
             // Draw the animated part of the text
             if (queenNameDisappearIndex == queenName.length()) {
-                // Appearance animation
+                // Appearance animation: Draw the text in yellow
                 String animatedText = queenName.substring(0, queenNameIndex);
                 g2d.setColor(Color.BLACK);
                 for (int i = -1; i <= 1; i++) {
@@ -580,21 +580,36 @@ class GameMainScreen extends JPanel {
                         }
                     }
                 }
-                g2d.setColor(Color.WHITE);
+                g2d.setColor(Color.YELLOW); // Yellow during appearance animation
                 g2d.drawString(animatedText, textX, textY);
             } else {
-                // Disappearance animation
-                String animatedText = queenName.substring(0, queenNameDisappearIndex);
+                // Disappearance animation: Turn letters white one by one
+                String remainingText = queenName.substring(0, queenNameDisappearIndex);
+                String whiteText = queenName.substring(queenNameDisappearIndex);
+
+                // Draw the remaining text in yellow
                 g2d.setColor(Color.BLACK);
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         if (i != 0 || j != 0) {
-                            g2d.drawString(animatedText, textX + i, textY + j);
+                            g2d.drawString(remainingText, textX + i, textY + j);
                         }
                     }
                 }
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(animatedText, textX, textY);
+                g2d.setColor(Color.YELLOW); // Yellow for the remaining text
+                g2d.drawString(remainingText, textX, textY);
+
+                // Draw the disappearing text in white, one letter at a time
+                g2d.setColor(Color.BLACK);
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i != 0 || j != 0) {
+                            g2d.drawString(whiteText, textX + fm.stringWidth(remainingText) + i, textY + j);
+                        }
+                    }
+                }
+                g2d.setColor(Color.WHITE); // White for the disappearing text
+                g2d.drawString(whiteText, textX + fm.stringWidth(remainingText), textY);
             }
         }
 
