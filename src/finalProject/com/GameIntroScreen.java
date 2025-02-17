@@ -1,4 +1,4 @@
-package finalProject.com; // draft 526
+package finalProject.com; // draft 538
 
 import javax.swing.*;
 import java.awt.*;
@@ -368,11 +368,14 @@ class GameMainScreen extends JPanel {
     private Timer introTextBoxMoveTimer; // Timer for moving the intro text box to the right
     private boolean introTextBoxVisible = false; // Flag to control visibility of the intro text box
 
+    private Image subTextBoxImage; // New image for the sub-text box
+
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
         this.backgrounds = backgrounds;
         queenBinaryImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-binary.png").getImage();
         introTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/intro-text-box.png").getImage(); // Load the intro text box image
+        subTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sub-text-box.png").getImage(); // Load the sub-text box image
 
         backgroundTimer = new Timer(200, new ActionListener() {
             @Override
@@ -477,6 +480,15 @@ class GameMainScreen extends JPanel {
             introTextBoxHeight = introTextBoxImage.getHeight(this);
             introTextBoxY = (getHeight() - introTextBoxHeight) / 2; // Center vertically
             g.drawImage(introTextBoxImage, introTextBoxX, introTextBoxY, introTextBoxWidth, introTextBoxHeight, this);
+
+            // Draw the sub-text-box on top of the intro text box
+            if (subTextBoxImage != null) {
+                int subTextBoxWidth = subTextBoxImage.getWidth(this);
+                int subTextBoxHeight = subTextBoxImage.getHeight(this);
+                int subTextBoxX = introTextBoxX + (introTextBoxWidth - subTextBoxWidth) / 2; // Center horizontally
+                int subTextBoxY = introTextBoxY - subTextBoxHeight / 2; // Position at the center top of the intro text box
+                g.drawImage(subTextBoxImage, subTextBoxX, subTextBoxY, subTextBoxWidth, subTextBoxHeight, this);
+            }
         }
 
         int queenWidth = queenBinaryImage.getWidth(this);
