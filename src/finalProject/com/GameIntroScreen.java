@@ -424,6 +424,7 @@ class GameMainScreen extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 queenNameVisible = true;
                 queenNameTimer.start();
+                playQueenTextIntroSound(); // Play the sound effect when the text starts animating
             }
         });
         delayTimer.setRepeats(false);
@@ -505,6 +506,18 @@ class GameMainScreen extends JPanel {
     private void playSoundEffect(String filePath) {
         try {
             File soundFile = new File(filePath);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void playQueenTextIntroSound() {
+        try {
+            File soundFile = new File("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-text-intro-sound.wav");
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
