@@ -418,6 +418,9 @@ class GameMainScreen extends JPanel {
                 introTextBoxX = queenX - introTextBoxWidth - 150; // Start the text box to the left of the queen
                 introTextBoxVisible = true; // Make the intro text box visible
                 introTextBoxMoveTimer.start(); // Start the intro text box movement timer
+
+                // Play the queen-box-slide-sound effect
+                playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-box-slide-sound.wav");
             }
         });
         delayTimer.setRepeats(false);
