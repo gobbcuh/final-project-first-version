@@ -370,6 +370,14 @@ class GameMainScreen extends JPanel {
 
     private Image subTextBoxImage; // New image for the sub-text box
 
+    private String queenName = "QUEEN BINARY";
+    private int queenNameIndex = 0; // For appearance animation
+    private int queenNameDisappearIndex = queenName.length(); // For disappearance animation
+    private Timer queenNameTimer;
+    private Timer queenNameDisappearTimer;
+    private boolean queenNameVisible = false;
+    private boolean queenNameAnimationComplete = false;
+
     public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
         this.parentFrame = parentFrame;
         this.backgrounds = backgrounds;
@@ -414,20 +422,57 @@ class GameMainScreen extends JPanel {
         Timer delayTimer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                queenMoveStarted = true;
-                queenMoveTimer.start();
-
-                // Set the initial position of the text box to be slightly closer to the middle of the screen
-                introTextBoxX = queenX - introTextBoxWidth - 150; // Start the text box to the left of the queen
-                introTextBoxVisible = true; // Make the intro text box visible
-                introTextBoxMoveTimer.start(); // Start the intro text box movement timer
-
-                // Play the queen-box-slide-sound effect
-                playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-box-slide-sound.wav");
+                queenNameVisible = true;
+                queenNameTimer.start();
             }
         });
         delayTimer.setRepeats(false);
         delayTimer.start();
+
+        // Timer for the queen's name appearance animation
+        queenNameTimer = new Timer(150, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (queenNameIndex < queenName.length()) {
+                    queenNameIndex++;
+                    repaint();
+                } else {
+                    queenNameTimer.stop();
+                    Timer pauseTimer = new Timer(3000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            queenNameDisappearTimer.start(); // Start the disappearance animation
+                        }
+                    });
+                    pauseTimer.setRepeats(false);
+                    pauseTimer.start();
+                }
+            }
+        });
+
+        // Timer for the queen's name disappearance animation
+        queenNameDisappearTimer = new Timer(150, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (queenNameDisappearIndex > 0) {
+                    queenNameDisappearIndex--;
+                    repaint();
+                } else {
+                    queenNameDisappearTimer.stop();
+                    queenNameVisible = false;
+                    queenMoveStarted = true;
+                    queenMoveTimer.start();
+
+                    // Set the initial position of the text box to be slightly closer to the middle of the screen
+                    introTextBoxX = queenX - introTextBoxWidth - 150; // Start the text box to the left of the queen
+                    introTextBoxVisible = true; // Make the intro text box visible
+                    introTextBoxMoveTimer.start(); // Start the intro text box movement timer
+
+                    // Play the queen-box-slide-sound effect
+                    playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-box-slide-sound.wav");
+                }
+            }
+        });
 
         // Timer for moving the queen to the left
         queenMoveTimer = new Timer(16, new ActionListener() {
@@ -506,6 +551,36 @@ class GameMainScreen extends JPanel {
 
         // Draw the queen's image
         g.drawImage(queenBinaryImage, queenX, queenY, newQueenWidth, newQueenHeight, this);
+
+        // Draw the queen's name with karaoke-like animation
+        if (queenNameVisible) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setFont(new Font("Droid Sans Tamil", Font.BOLD, 24));
+            FontMetrics fm = g2d.getFontMetrics();
+            int textWidth = fm.stringWidth(queenName);
+            int textHeight = fm.getHeight();
+
+            // Calculate the position of the text above the queen's head
+            int textX = queenX + (newQueenWidth - textWidth) / 2;
+            int textY = queenY - textHeight;
+
+            // Draw the full text in a lighter color
+            g2d.setColor(new Color(255, 255, 0, 100));
+            g2d.drawString(queenName, textX, textY);
+
+            // Draw the animated part of the text
+            if (queenNameDisappearIndex == queenName.length()) {
+                // Appearance animation
+                String animatedText = queenName.substring(0, queenNameIndex);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(animatedText, textX, textY);
+            } else {
+                // Disappearance animation
+                String animatedText = queenName.substring(0, queenNameDisappearIndex);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(animatedText, textX, textY);
+            }
+        }
 
         // Draw sparkles around the queen
         Graphics2D g2d = (Graphics2D) g;
