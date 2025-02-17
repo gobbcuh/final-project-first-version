@@ -612,7 +612,7 @@ class GameMainScreen extends JPanel {
             int sparkleSize = 5 + (int) (Math.random() * 5); // Vary size between 5 and 10
 
             // Use a solid white color with the current alpha value
-            g2d.setColor(new Color(255, 255, 0, sparkleAlpha));
+            g2d.setColor(new Color(255, 255, 255, sparkleAlpha));
 
             // Draw the sparkle as a star shape
             int[] xPoints = {
