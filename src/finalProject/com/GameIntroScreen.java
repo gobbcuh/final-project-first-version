@@ -424,7 +424,6 @@ class GameMainScreen extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 queenNameVisible = true;
                 queenNameTimer.start();
-                playQueenTextIntroSound(); // Play the sound effect when the text starts animating
             }
         });
         delayTimer.setRepeats(false);
@@ -436,6 +435,10 @@ class GameMainScreen extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (queenNameIndex < queenName.length()) {
                     queenNameIndex++;
+                    // Play the sound effect when the first letter starts to animate
+                    if (queenNameIndex == 1) {
+                        playQueenTextIntroSound(); // Play the sound immediately when the first letter animates
+                    }
                     repaint();
                 } else {
                     queenNameTimer.stop();
