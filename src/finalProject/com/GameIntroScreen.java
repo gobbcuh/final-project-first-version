@@ -431,7 +431,7 @@ class GameMainScreen extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (queenX > 265) { // Move the queen to the left until she reaches x = 150
-                    queenX -= 5;
+                    queenX -= 7;
                     repaint();
                 } else {
                     ((Timer) e.getSource()).stop();
