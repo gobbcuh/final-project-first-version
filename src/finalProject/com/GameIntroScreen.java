@@ -565,18 +565,34 @@ class GameMainScreen extends JPanel {
             int textY = queenY - textHeight;
 
             // Draw the full text in a lighter color
-            g2d.setColor(new Color(255, 255, 0, 100));
+            g2d.setColor(new Color(255, 255, 255, 100));
             g2d.drawString(queenName, textX, textY);
 
             // Draw the animated part of the text
             if (queenNameDisappearIndex == queenName.length()) {
                 // Appearance animation
                 String animatedText = queenName.substring(0, queenNameIndex);
+                g2d.setColor(Color.BLACK);
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i != 0 || j != 0) {
+                            g2d.drawString(animatedText, textX + i, textY + j);
+                        }
+                    }
+                }
                 g2d.setColor(Color.WHITE);
                 g2d.drawString(animatedText, textX, textY);
             } else {
                 // Disappearance animation
                 String animatedText = queenName.substring(0, queenNameDisappearIndex);
+                g2d.setColor(Color.BLACK);
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i != 0 || j != 0) {
+                            g2d.drawString(animatedText, textX + i, textY + j);
+                        }
+                    }
+                }
                 g2d.setColor(Color.WHITE);
                 g2d.drawString(animatedText, textX, textY);
             }
@@ -596,7 +612,7 @@ class GameMainScreen extends JPanel {
             int sparkleSize = 5 + (int) (Math.random() * 5); // Vary size between 5 and 10
 
             // Use a solid white color with the current alpha value
-            g2d.setColor(new Color(255, 255, 255, sparkleAlpha));
+            g2d.setColor(new Color(255, 255, 0, sparkleAlpha));
 
             // Draw the sparkle as a star shape
             int[] xPoints = {
