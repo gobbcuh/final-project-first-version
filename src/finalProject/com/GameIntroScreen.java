@@ -571,7 +571,7 @@ class GameMainScreen extends JPanel {
         // Draw the queen's name with karaoke-like animation
         if (queenNameVisible) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.setFont(new Font("Century Gothic", Font.BOLD, 24));
+            g2d.setFont(new Font("Lucida Console", Font.BOLD, 24));
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(queenName);
             int textHeight = fm.getHeight();
