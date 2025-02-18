@@ -418,12 +418,12 @@ class GameMainScreen extends JPanel {
         // Play the queen's entrance sound effect
         playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-appear-sound.wav");
 
-        // Timer to delay the queen's movement
-        Timer delayTimer = new Timer(3000, new ActionListener() {
+        // Timer to delay the queen's movement (removed the 3-second delay)
+        Timer delayTimer = new Timer(0, new ActionListener() { // Changed from 3000 to 0
             @Override
             public void actionPerformed(ActionEvent e) {
                 queenNameVisible = true;
-                queenNameTimer.start();
+                queenNameTimer.start(); // Start the queen's name animation immediately
             }
         });
         delayTimer.setRepeats(false);
