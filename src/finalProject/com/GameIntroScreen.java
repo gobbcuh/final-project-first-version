@@ -261,8 +261,6 @@ public class GameIntroScreen extends JPanel {
     }
 
     private void transitionToNextScreen() {
-        // Stop the fade-out timer if it's running
-        // Instead of using a fade-out animation, directly transition to the next screen
         GameMainScreen gameMainScreen = new GameMainScreen(parentFrame);
         parentFrame.getContentPane().removeAll();
         parentFrame.getContentPane().add(gameMainScreen);
@@ -483,10 +481,11 @@ class GameMainScreen extends JPanel {
                     // Set the initial position of the text box to be slightly closer to the middle of the screen
                     introTextBoxX = queenX - introTextBoxWidth - 150; // Start the text box to the left of the queen
                     introTextBoxVisible = true; // Make the intro text box visible
-                    introTextBoxMoveTimer.start(); // Start the intro text box movement timer
 
-                    // Play the queen-box-slide-sound effect
+                    // Play the queen-box-slide-sound effect when the text box starts moving
                     playSoundEffect("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-box-slide-sound.wav");
+
+                    introTextBoxMoveTimer.start(); // Start the intro text box movement timer
                 }
             }
         });
