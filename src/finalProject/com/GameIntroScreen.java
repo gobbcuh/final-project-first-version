@@ -263,9 +263,7 @@ public class GameIntroScreen extends JPanel {
     private void transitionToNextScreen() {
         // Stop the fade-out timer if it's running
         // Instead of using a fade-out animation, directly transition to the next screen
-
-        Image bgFirst = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first.png").getImage();
-        GameMainScreen gameMainScreen = new GameMainScreen(parentFrame, new Image[]{bgFirst});
+        GameMainScreen gameMainScreen = new GameMainScreen(parentFrame);
         parentFrame.getContentPane().removeAll();
         parentFrame.getContentPane().add(gameMainScreen);
         parentFrame.revalidate();
@@ -378,13 +376,20 @@ class GameMainScreen extends JPanel {
     private boolean queenNameVisible = false;
     private boolean queenNameAnimationComplete = false;
 
-    public GameMainScreen(JFrame parentFrame, Image[] backgrounds) {
+    public GameMainScreen(JFrame parentFrame) {
         this.parentFrame = parentFrame;
-        this.backgrounds = backgrounds;
+
+        // Load the new background images
+        this.backgrounds = new Image[3];
+        this.backgrounds[0] = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first.png").getImage();
+        this.backgrounds[1] = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first2.png").getImage();
+        this.backgrounds[2] = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/bg-first3.png").getImage();
+
         queenBinaryImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-binary.png").getImage();
         introTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/intro-text-box.png").getImage(); // Load the intro text box image
         subTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sub-text-box.png").getImage(); // Load the sub-text box image
 
+        // Set up the background timer to cycle through the new images
         backgroundTimer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
