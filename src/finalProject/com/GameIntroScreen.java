@@ -442,7 +442,15 @@ class GameMainScreen extends JPanel {
                     queenNameIndex++;
                     // Play the sound effect when the first letter starts to animate
                     if (queenNameIndex == 1) {
-                        playQueenTextIntroSound(); // Play the sound immediately when the first letter animates
+                        // Add a 2-second delay before playing the sound
+                        Timer soundDelayTimer = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                playQueenTextIntroSound(); // Play the sound after the delay
+                            }
+                        });
+                        soundDelayTimer.setRepeats(false); // Ensure the timer only runs once
+                        soundDelayTimer.start();
                     }
                     repaint();
                 } else {
