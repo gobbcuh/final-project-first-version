@@ -1,4 +1,4 @@
-package finalProject.com; // draft 673
+package finalProject.com; // draft 672
 
 import javax.swing.*;
 import java.awt.*;
@@ -363,6 +363,7 @@ class GameMainScreen extends JPanel {
     private int introTextBoxHeight; // Height of the intro text box
     private Timer introTextBoxMoveTimer; // Timer for moving the intro text box to the right
     private boolean introTextBoxVisible = false; // Flag to control visibility of the intro text box
+    private boolean introTextBoxStopped = false; // Flag to check if the intro text box has stopped moving
 
     private Image subTextBoxImage; // New image for the sub-text box
 
@@ -513,6 +514,8 @@ class GameMainScreen extends JPanel {
                     repaint();
                 } else {
                     ((Timer) e.getSource()).stop();
+                    introTextBoxStopped = true; // Set the flag to true when the text box stops moving
+                    repaint(); // Trigger repaint to draw the text
                 }
             }
         });
@@ -562,8 +565,46 @@ class GameMainScreen extends JPanel {
                 int subTextBoxY = introTextBoxY - subTextBoxHeight / 2; // Position at the center top of the intro text box
                 g.drawImage(subTextBoxImage, subTextBoxX, subTextBoxY, subTextBoxWidth, subTextBoxHeight, this);
             }
+
+            // Draw the text within the intro text box after it has stopped moving
+            if (introTextBoxStopped && queenMoveTimer.isRunning() == false) {
+                String text = "Brave hero, something terrible has happened! A bad bug called Glitch has stolen all the knowledge from our kingdom and broken it into pieces! These pieces are scattered across four lands: Binary Forest, Hardware Haven, Software Shore, and Internet Island. You’re the only one who can help! You must travel to these lands, solve the challenges, and find the lost knowledge. Only then can we defeat Glitch and fix our world!";
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setFont(new Font("Lucida Console", Font.PLAIN, 14));
+                FontMetrics fm = g2d.getFontMetrics();
+
+                // Calculate the margins
+                int marginX = (int) (0.7 * 72); // 0.5 inch margin in pixels (72 pixels per inch)
+                int marginY = (int) (0.3 * 72); // 0.3 inch margin in pixels
+
+                // Calculate the text area
+                int textAreaX = introTextBoxX + marginX;
+                int textAreaY = introTextBoxY + marginY + 30; // Adjusted downward by 20 pixels
+                int textAreaWidth = introTextBoxWidth - 2 * marginX;
+                int textAreaHeight = introTextBoxHeight - 2 * marginY;
+
+                // Split the text into lines that fit within the text area
+                String[] words = text.split(" ");
+                StringBuilder line = new StringBuilder();
+                int y = textAreaY + fm.getAscent();
+                for (String word : words) {
+                    String testLine = line.length() == 0 ? word : line + " " + word;
+                    int testWidth = fm.stringWidth(testLine);
+                    if (testWidth > textAreaWidth) {
+                        g2d.drawString(line.toString(), textAreaX, y);
+                        line = new StringBuilder(word);
+                        y += fm.getHeight();
+                    } else {
+                        line.append(line.length() == 0 ? word : " " + word);
+                    }
+                }
+                if (line.length() > 0) {
+                    g2d.drawString(line.toString(), textAreaX, y);
+                }
+            }
         }
 
+        // Draw the queen's image
         int queenWidth = queenBinaryImage.getWidth(this);
         int queenHeight = queenBinaryImage.getHeight(this);
         int screenHeight = getHeight();
@@ -577,7 +618,6 @@ class GameMainScreen extends JPanel {
             queenY = (screenHeight - newQueenHeight) / 2 + 30;
         }
 
-        // Draw the queen's image
         g.drawImage(queenBinaryImage, queenX, queenY, newQueenWidth, newQueenHeight, this);
 
         // Draw the queen's name with karaoke-like animation
