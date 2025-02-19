@@ -491,7 +491,7 @@ class GameMainScreen extends JPanel {
         });
 
         // Timer for moving the queen to the left
-        queenMoveTimer = new Timer(16, new ActionListener() {
+        queenMoveTimer = new Timer(17, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (queenX > 265) { // Move the queen to the left until she reaches x = 150
