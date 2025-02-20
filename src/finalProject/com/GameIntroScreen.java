@@ -593,7 +593,7 @@ class GameMainScreen extends JPanel {
             // Draw the text within the intro text box after it has stopped moving
             if (introTextBoxStopped && queenMoveTimer.isRunning() == false) {
                 Graphics2D g2d = (Graphics2D) g;
-                g2d.setFont(new Font("Lucida Console", Font.PLAIN, 14));
+                g2d.setFont(new Font("Century Gothic", Font.BOLD, 14));
                 FontMetrics fm = g2d.getFontMetrics();
 
                 // Calculate the margins
