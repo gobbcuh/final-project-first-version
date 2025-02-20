@@ -375,6 +375,10 @@ class GameMainScreen extends JPanel {
     private boolean queenNameVisible = false;
     private boolean queenNameAnimationComplete = false;
 
+    private String[] textWords; // Array to hold individual words of the text
+    private int currentWordIndex = 0; // Index of the current word being displayed
+    private Timer wordDisplayTimer; // Timer for word-by-word display
+
     public GameMainScreen(JFrame parentFrame) {
         this.parentFrame = parentFrame;
 
@@ -387,6 +391,23 @@ class GameMainScreen extends JPanel {
         queenBinaryImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/queen-binary.png").getImage();
         introTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/intro-text-box.png").getImage(); // Load the intro text box image
         subTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sub-text-box.png").getImage(); // Load the sub-text box image
+
+        // Initialize the text words array
+        String text = "Brave hero, something terrible has happened! A bad bug called Glitch has stolen all the knowledge from our kingdom and broken it into pieces! These pieces are scattered across four lands: Binary Forest, Hardware Haven, Software Shore, and Internet Island. You’re the only one who can help! You must travel to these lands, solve the challenges, and find the lost knowledge. Only then can we defeat Glitch and fix our world!";
+        textWords = text.split(" ");
+
+        // Timer for word-by-word display
+        wordDisplayTimer = new Timer(200, new ActionListener() { // Adjust the delay as needed
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentWordIndex < textWords.length) {
+                    currentWordIndex++;
+                    repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
 
         // Set up the background timer to cycle through the new images
         backgroundTimer = new Timer(200, new ActionListener() {
@@ -516,6 +537,9 @@ class GameMainScreen extends JPanel {
                     ((Timer) e.getSource()).stop();
                     introTextBoxStopped = true; // Set the flag to true when the text box stops moving
                     repaint(); // Trigger repaint to draw the text
+
+                    // Start the word-by-word display timer
+                    wordDisplayTimer.start();
                 }
             }
         });
@@ -568,7 +592,6 @@ class GameMainScreen extends JPanel {
 
             // Draw the text within the intro text box after it has stopped moving
             if (introTextBoxStopped && queenMoveTimer.isRunning() == false) {
-                String text = "Brave hero, something terrible has happened! A bad bug called Glitch has stolen all the knowledge from our kingdom and broken it into pieces! These pieces are scattered across four lands: Binary Forest, Hardware Haven, Software Shore, and Internet Island. You’re the only one who can help! You must travel to these lands, solve the challenges, and find the lost knowledge. Only then can we defeat Glitch and fix our world!";
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setFont(new Font("Lucida Console", Font.PLAIN, 14));
                 FontMetrics fm = g2d.getFontMetrics();
@@ -583,8 +606,14 @@ class GameMainScreen extends JPanel {
                 int textAreaWidth = introTextBoxWidth - 2 * marginX;
                 int textAreaHeight = introTextBoxHeight - 2 * marginY;
 
+                // Build the text up to the current word
+                StringBuilder displayedText = new StringBuilder();
+                for (int i = 0; i < currentWordIndex; i++) {
+                    displayedText.append(textWords[i]).append(" ");
+                }
+
                 // Split the text into lines that fit within the text area
-                String[] words = text.split(" ");
+                String[] words = displayedText.toString().split(" ");
                 StringBuilder line = new StringBuilder();
                 int y = textAreaY + fm.getAscent();
                 for (String word : words) {
@@ -623,7 +652,7 @@ class GameMainScreen extends JPanel {
         // Draw the queen's name with karaoke-like animation
         if (queenNameVisible) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.setFont(new Font("Lucida Console", Font.BOLD, 24));
+            g2d.setFont(new Font("Century Gothic", Font.BOLD, 24));
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(queenName);
             int textHeight = fm.getHeight();
