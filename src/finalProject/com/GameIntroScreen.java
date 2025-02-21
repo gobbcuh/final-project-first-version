@@ -397,7 +397,7 @@ class GameMainScreen extends JPanel {
         textWords = text.split(" ");
 
         // Timer for word-by-word display
-        wordDisplayTimer = new Timer(200, new ActionListener() { // Adjust the delay as needed
+        wordDisplayTimer = new Timer(500, new ActionListener() { // Increased delay to 500ms
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentWordIndex < textWords.length) {
