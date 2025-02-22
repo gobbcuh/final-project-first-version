@@ -620,7 +620,7 @@ class GameMainScreen extends JPanel {
                     String testLine = line.length() == 0 ? word : line + " " + word;
                     int testWidth = fm.stringWidth(testLine);
                     if (testWidth > textAreaWidth) {
-                        g2d.drawString(line.toString(), textAreaX, y);
+                        drawLine(g2d, line.toString(), textAreaX, y, fm);
                         line = new StringBuilder(word);
                         y += fm.getHeight();
                     } else {
@@ -628,7 +628,7 @@ class GameMainScreen extends JPanel {
                     }
                 }
                 if (line.length() > 0) {
-                    g2d.drawString(line.toString(), textAreaX, y);
+                    drawLine(g2d, line.toString(), textAreaX, y, fm);
                 }
             }
         }
@@ -736,6 +736,31 @@ class GameMainScreen extends JPanel {
                     sparkleY + sparkleSize / 4, sparkleY, sparkleY - sparkleSize / 4
             };
             g2d.fillPolygon(xPoints, yPoints, 8);
+        }
+    }
+
+    private void drawLine(Graphics2D g2d, String line, int x, int y, FontMetrics fm) {
+        String[] words = line.split(" ");
+        int currentX = x;
+        for (String word : words) {
+            // Check if the word is "Glitch"
+            if (word.equalsIgnoreCase("Glitch")) {
+                g2d.setColor(new Color(165, 42, 42)); // Brown color for "Glitch"
+            }
+            // Check if the word is part of the special names
+            else if (word.equalsIgnoreCase("Binary") || word.equalsIgnoreCase("Hardware") ||
+                    word.equalsIgnoreCase("Software") || word.equalsIgnoreCase("Internet")) {
+                g2d.setColor(new Color(184, 134, 11)); // Dark yellow color for special names
+            } else if (word.equalsIgnoreCase("River") || word.equalsIgnoreCase("Mountains") ||
+                    word.equalsIgnoreCase("Sanctum") || word.equalsIgnoreCase("Island")) {
+                g2d.setColor(new Color(184, 134, 11)); // Dark yellow color for special names
+            } else {
+                g2d.setColor(Color.BLACK); // Default color for other words
+            }
+
+            // Draw the word
+            g2d.drawString(word, currentX, y);
+            currentX += fm.stringWidth(word + " ");
         }
     }
 }
