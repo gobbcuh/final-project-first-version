@@ -742,25 +742,57 @@ class GameMainScreen extends JPanel {
     private void drawLine(Graphics2D g2d, String line, int x, int y, FontMetrics fm) {
         String[] words = line.split(" ");
         int currentX = x;
-        for (String word : words) {
-            // Check if the word is "Glitch"
-            if (word.equalsIgnoreCase("Glitch")) {
-                g2d.setColor(new Color(165, 42, 42)); // Brown color for "Glitch"
-            }
-            // Check if the word is part of the special names
-            else if (word.equalsIgnoreCase("Binary") || word.equalsIgnoreCase("Hardware") ||
-                    word.equalsIgnoreCase("Software") || word.equalsIgnoreCase("Internet")) {
-                g2d.setColor(new Color(184, 134, 11)); // Dark yellow color for special names
-            } else if (word.equalsIgnoreCase("River") || word.equalsIgnoreCase("Mountains") ||
-                    word.equalsIgnoreCase("Sanctum") || word.equalsIgnoreCase("Island")) {
-                g2d.setColor(new Color(184, 134, 11)); // Dark yellow color for special names
-            } else {
-                g2d.setColor(Color.BLACK); // Default color for other words
-            }
 
-            // Draw the word
-            g2d.drawString(word, currentX, y);
-            currentX += fm.stringWidth(word + " ");
+        // Define the special phrases and their colors
+        String[] specialPhrases = {
+                "Binary River", "Hardware Mountains", "Software Sanctum", "Internet Island"
+        };
+        Color specialColor = new Color(184, 134, 11); // Dark yellow for special phrases
+        Color glitchColor = new Color(165, 42, 42); // Brown for "Glitch"
+
+        int i = 0;
+        while (i < words.length) {
+            // Check if the current word is "Glitch"
+            if (words[i].equalsIgnoreCase("Glitch")) {
+                g2d.setColor(glitchColor);
+                g2d.drawString(words[i], currentX, y);
+                currentX += fm.stringWidth(words[i] + " ");
+                i++;
+            }
+            // Check for multi-word special phrases
+            else {
+                boolean isSpecialPhrase = false;
+                for (String phrase : specialPhrases) {
+                    String[] phraseWords = phrase.split(" ");
+                    if (i + phraseWords.length <= words.length) {
+                        // Check if the next words match the phrase
+                        boolean match = true;
+                        for (int j = 0; j < phraseWords.length; j++) {
+                            if (!words[i + j].equalsIgnoreCase(phraseWords[j])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            // If it matches, set the color and draw the entire phrase
+                            g2d.setColor(specialColor);
+                            String fullPhrase = String.join(" ", phraseWords); // Combine phrase words
+                            g2d.drawString(fullPhrase, currentX, y);
+                            currentX += fm.stringWidth(fullPhrase + " "); // Add space after the phrase
+                            i += phraseWords.length; // Skip the words in the phrase
+                            isSpecialPhrase = true;
+                            break;
+                        }
+                    }
+                }
+                // If no special phrase was found, draw the word in default color
+                if (!isSpecialPhrase) {
+                    g2d.setColor(Color.BLACK); // Default color
+                    g2d.drawString(words[i], currentX, y);
+                    currentX += fm.stringWidth(words[i] + " ");
+                    i++;
+                }
+            }
         }
     }
 }
