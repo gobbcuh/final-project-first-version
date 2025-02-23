@@ -19,6 +19,14 @@ public class Sophia_Walking extends JPanel implements KeyListener {
         walkLeft1 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk1.png").getImage();
         walkLeft2 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk2.png").getImage();
 
+        // Scale images to a larger size (e.g., 100x100)
+        int width = 100; // Desired width
+        int height = 100; // Desired height
+        walkRight1 = walkRight1.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        walkRight2 = walkRight2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        walkLeft1 = walkLeft1.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        walkLeft2 = walkLeft2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
         // Check if images are loaded
         if (walkRight1 == null || walkRight2 == null || walkLeft1 == null || walkLeft2 == null) {
             System.err.println("Error: One or more images failed to load!");
@@ -36,15 +44,16 @@ public class Sophia_Walking extends JPanel implements KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Draw the current image at position (x, 200)
-        g.drawImage(currentImage, x, 200, null);
+        // Draw the current image at position (x, y) near the bottom of the screen
+        int y = getHeight() - 120; // Adjust Y-coordinate to position the image near the bottom
+        g.drawImage(currentImage, x, y, null);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             // Move right
-            if (x < getWidth() - 50) { // Ensure character does not move past the screen width
+            if (x < getWidth() - 100) { // Ensure character does not move past the screen width
                 x += 10; // Move right
                 toggleImage = !toggleImage; // Switch image
                 currentImage = toggleImage ? walkRight2 : walkRight1;
