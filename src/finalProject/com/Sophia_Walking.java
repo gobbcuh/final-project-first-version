@@ -6,17 +6,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Sophia_Walking extends JPanel implements KeyListener {
-    private Image walkRight1, walkRight2, currentImage;
+    private Image walkRight1, walkRight2, walkLeft1, walkLeft2, currentImage;
     private int x = 0; // Initial X position
     private boolean toggleImage = false; // To alternate images
 
     public Sophia_Walking() {
-        // Load images
+        // Load right-walking images
         walkRight1 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/right_walk1.png").getImage();
         walkRight2 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/right_walk2.png").getImage();
 
+        // Load left-walking images
+        walkLeft1 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk1.png").getImage();
+        walkLeft2 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk2.png").getImage();
+
         // Check if images are loaded
-        if (walkRight1 == null || walkRight2 == null) {
+        if (walkRight1 == null || walkRight2 == null || walkLeft1 == null || walkLeft2 == null) {
             System.err.println("Error: One or more images failed to load!");
         }
 
@@ -39,10 +43,19 @@ public class Sophia_Walking extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            // Move right
             if (x < getWidth() - 50) { // Ensure character does not move past the screen width
                 x += 10; // Move right
                 toggleImage = !toggleImage; // Switch image
                 currentImage = toggleImage ? walkRight2 : walkRight1;
+                repaint(); // Update screen
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            // Move left
+            if (x > 0) { // Ensure character does not move past the screen's left edge
+                x -= 10; // Move left
+                toggleImage = !toggleImage; // Switch image
+                currentImage = toggleImage ? walkLeft2 : walkLeft1;
                 repaint(); // Update screen
             }
         }
