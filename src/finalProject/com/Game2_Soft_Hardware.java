@@ -2,19 +2,12 @@ package finalProject.com;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
 
 public class Game2_Soft_Hardware extends JPanel {
 
     private Image backgroundImage;
 
-    // Constructor
     public Game2_Soft_Hardware() {
-        // Load the background image
         try {
             backgroundImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/game2-bg.jpg").getImage();
         } catch (Exception e) {
