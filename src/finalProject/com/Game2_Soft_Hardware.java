@@ -11,10 +11,13 @@ import java.io.IOException;
 public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private Image backgroundImage; // Background image
     private Image walkRight1, walkRight2, walkLeft1, walkLeft2, currentImage; // Character images
+    private Image gameTitleImage; // Game title image
     private int x = 0; // Initial X position of the character
     private boolean toggleImage = false; // To alternate images
     private float alpha = 0f; // Transparency for teleportation effect
     private boolean isTeleporting = true; // Teleportation state
+    private boolean showGameTitle = false; // Flag to show game title
+    private int gameTitleY = -100; // Initial Y position of the game title (off-screen)
 
     public Game2_Soft_Hardware() {
         // Load background image
@@ -33,6 +36,9 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         walkLeft1 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk1.png").getImage();
         walkLeft2 = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sophiaWalk/left_walk2.png").getImage();
 
+        // Load game title image
+        gameTitleImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/game-title.png").getImage();
+
         // Scale images to a larger size (e.g., 100x100)
         int width = 100; // Desired width
         int height = 100; // Desired height
@@ -42,8 +48,8 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         walkLeft2 = walkLeft2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
         // Check if images are loaded
-        if (walkRight1 == null || walkRight2 == null || walkLeft1 == null || walkLeft2 == null) {
-            System.err.println("Error: One or more character images failed to load!");
+        if (walkRight1 == null || walkRight2 == null || walkLeft1 == null || walkLeft2 == null || gameTitleImage == null) {
+            System.err.println("Error: One or more images failed to load!");
         }
 
         currentImage = walkRight1; // Set initial image
@@ -71,6 +77,12 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         g2d.drawImage(currentImage, x, y, null);
+
+        // Draw the game title image if teleportation is complete
+        if (showGameTitle) {
+            int titleX = (getWidth() - gameTitleImage.getWidth(null)) / 2; // Center horizontally
+            g2d.drawImage(gameTitleImage, titleX, gameTitleY, null);
+        }
     }
 
     private void startTeleportation() {
@@ -84,11 +96,27 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
                 alpha = 1f;
                 isTeleporting = false;
                 ((Timer) e.getSource()).stop();
+                showGameTitle = true; // Set flag to show game title
+                startGameTitleAnimation(); // Start game title animation
             }
             repaint();
         });
         teleportTimer.setInitialDelay(0); // Start the timer immediately
         teleportTimer.start();
+    }
+
+    private void startGameTitleAnimation() {
+        // Use a Timer to create the sliding animation for the game title
+        Timer titleTimer = new Timer(10, e -> {
+            if (gameTitleY < 50) { // Adjust the final Y position as needed
+                gameTitleY += 2; // Slide down
+                repaint();
+            } else {
+                ((Timer) e.getSource()).stop();
+            }
+        });
+        titleTimer.setInitialDelay(0); // Start the timer immediately
+        titleTimer.start();
     }
 
     private void playSound(String soundFilePath) {
