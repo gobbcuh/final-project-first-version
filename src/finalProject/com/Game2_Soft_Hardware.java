@@ -10,6 +10,8 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private Image walkRight1, walkRight2, walkLeft1, walkLeft2, currentImage; // Character images
     private int x = 0; // Initial X position of the character
     private boolean toggleImage = false; // To alternate images
+    private float alpha = 0f; // Transparency for teleportation effect
+    private boolean isTeleporting = true; // Teleportation state
 
     public Game2_Soft_Hardware() {
         // Load background image
@@ -45,6 +47,9 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
 
         setFocusable(true); // Allow the panel to receive key events
         addKeyListener(this); // Add key listener
+
+        // Start teleportation animation
+        startTeleportation();
     }
 
     @Override
@@ -58,7 +63,25 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
 
         // Draw the current character image at position (x, y) near the bottom of the screen
         int y = getHeight() - 150; // Adjust Y-coordinate to position the character near the bottom
-        g.drawImage(currentImage, x, y, null);
+
+        // Apply transparency for teleportation effect
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2d.drawImage(currentImage, x, y, null);
+    }
+
+    private void startTeleportation() {
+        // Use a Timer to create the teleportation effect
+        Timer teleportTimer = new Timer(30, e -> {
+            alpha += 0.05f; // Gradually increase transparency
+            if (alpha >= 1f) { // Stop when fully visible
+                alpha = 1f;
+                isTeleporting = false;
+                ((Timer) e.getSource()).stop();
+            }
+            repaint();
+        });
+        teleportTimer.start();
     }
 
     @Override
