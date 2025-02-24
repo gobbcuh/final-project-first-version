@@ -74,11 +74,11 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     }
 
     private void startTeleportation() {
-        // Play teleport sound effect
+        // Play teleport sound effect immediately
         playSound("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/teleport-sophia.wav");
 
         // Use a Timer to create the teleportation effect
-        Timer teleportTimer = new Timer(0, e -> {
+        Timer teleportTimer = new Timer(30, e -> {
             alpha += 0.05f; // Gradually increase transparency
             if (alpha >= 1f) { // Stop when fully visible
                 alpha = 1f;
@@ -87,6 +87,7 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
             }
             repaint();
         });
+        teleportTimer.setInitialDelay(0); // Start the timer immediately
         teleportTimer.start();
     }
 
