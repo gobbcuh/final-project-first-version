@@ -1,9 +1,12 @@
 package finalProject.com;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 
 public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private Image backgroundImage; // Background image
@@ -71,8 +74,11 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     }
 
     private void startTeleportation() {
+        // Play teleport sound effect
+        playSound("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/teleport-sophia.wav");
+
         // Use a Timer to create the teleportation effect
-        Timer teleportTimer = new Timer(30, e -> {
+        Timer teleportTimer = new Timer(0, e -> {
             alpha += 0.05f; // Gradually increase transparency
             if (alpha >= 1f) { // Stop when fully visible
                 alpha = 1f;
@@ -82,6 +88,22 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
             repaint();
         });
         teleportTimer.start();
+    }
+
+    private void playSound(String soundFilePath) {
+        try {
+            // Load the sound file
+            File soundFile = new File(soundFilePath);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+
+            // Play the sound
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+            System.err.println("Error playing sound: " + e.getMessage());
+        }
     }
 
     @Override
