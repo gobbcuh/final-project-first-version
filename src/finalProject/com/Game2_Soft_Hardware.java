@@ -39,13 +39,18 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         // Load game title image
         gameTitleImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/game-title.png").getImage();
 
-        // Scale images to a larger size (e.g., 100x100)
+        // Scale character images to a larger size (e.g., 100x100)
         int width = 100; // Desired width
         int height = 100; // Desired height
         walkRight1 = walkRight1.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         walkRight2 = walkRight2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         walkLeft1 = walkLeft1.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         walkLeft2 = walkLeft2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+        // Scale game title image to a smaller size (e.g., 300x100)
+        int titleWidth = 600; // Desired width
+        int titleHeight = 400; // Desired height
+        gameTitleImage = gameTitleImage.getScaledInstance(titleWidth, titleHeight, Image.SCALE_SMOOTH);
 
         // Check if images are loaded
         if (walkRight1 == null || walkRight2 == null || walkLeft1 == null || walkLeft2 == null || gameTitleImage == null) {
@@ -108,7 +113,7 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private void startGameTitleAnimation() {
         // Use a Timer to create the sliding animation for the game title
         Timer titleTimer = new Timer(10, e -> {
-            if (gameTitleY < 50) { // Adjust the final Y position as needed
+            if (gameTitleY < 50) { // Adjust the final Y position as needed (moved upwards)
                 gameTitleY += 2; // Slide down
                 repaint();
             } else {
