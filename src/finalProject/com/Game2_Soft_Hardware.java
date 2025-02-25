@@ -18,6 +18,7 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private boolean isTeleporting = true; // Teleportation state
     private boolean showGameTitle = false; // Flag to show game title
     private int gameTitleY = -100; // Initial Y position of the game title (off-screen)
+    private Clip walkSoundClip; // Clip for walking sound effect
 
     public Game2_Soft_Hardware() {
         // Load background image
@@ -47,7 +48,7 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         walkLeft1 = walkLeft1.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         walkLeft2 = walkLeft2.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
-        // Scale game title image to a smaller size (e.g., 300x100)
+        // Scale game title image to a smaller size (e.g., 600x400)
         int titleWidth = 600; // Desired width
         int titleHeight = 400; // Desired height
         gameTitleImage = gameTitleImage.getScaledInstance(titleWidth, titleHeight, Image.SCALE_SMOOTH);
@@ -61,6 +62,17 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
 
         setFocusable(true); // Allow the panel to receive key events
         addKeyListener(this); // Add key listener
+
+        // Load walking sound effect
+        try {
+            File walkSoundFile = new File("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/gameTwo/sophia-walk-sound-effect.wav");
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(walkSoundFile);
+            walkSoundClip = AudioSystem.getClip();
+            walkSoundClip.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+            System.err.println("Error loading walking sound effect: " + e.getMessage());
+        }
 
         // Start teleportation animation
         startTeleportation();
@@ -149,6 +161,14 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
                 toggleImage = !toggleImage; // Switch image
                 currentImage = toggleImage ? walkRight2 : walkRight1;
                 repaint(); // Update screen
+
+                // Play walking sound effect
+                if (walkSoundClip != null) {
+                    if (!walkSoundClip.isRunning()) { // Avoid overlapping sounds
+                        walkSoundClip.setFramePosition(0); // Rewind to the beginning
+                        walkSoundClip.start();
+                    }
+                }
             }
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             // Move left
@@ -157,6 +177,14 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
                 toggleImage = !toggleImage; // Switch image
                 currentImage = toggleImage ? walkLeft2 : walkLeft1;
                 repaint(); // Update screen
+
+                // Play walking sound effect
+                if (walkSoundClip != null) {
+                    if (!walkSoundClip.isRunning()) { // Avoid overlapping sounds
+                        walkSoundClip.setFramePosition(0); // Rewind to the beginning
+                        walkSoundClip.start();
+                    }
+                }
             }
         }
     }
