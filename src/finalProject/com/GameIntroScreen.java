@@ -393,7 +393,7 @@ class GameMainScreen extends JPanel {
         subTextBoxImage = new ImageIcon("C:/Users/User/IdeaProjects/java Programs/out/production/java Programs/finalProject/com/sub-text-box.png").getImage(); // Load the sub-text box image
 
         // Initialize the text words array
-        String text = "Brave hero, something terrible has happened! A bad bug called Glitch has stolen all the knowledge from our kingdom and broken it into pieces! These pieces are scattered across four lands: Binary River, Hardware Mountains, Software Sanctum, and Internet Island. You’re the only one who can help! You must travel to these lands, solve the challenges, and find the lost knowledge. Only then can we defeat Glitch and fix our world!";
+        String text = "Brave Sophia, something terrible has happened! A bad bug called Glitch has stolen all the knowledge from our kingdom and broken it into pieces! These pieces are scattered across four lands: Binary River, Hardware Mountains, Software Sanctum, and Internet Island. You’re the only one who can help! You must travel to these lands, solve the challenges, and find the lost knowledge. Only then can we defeat Glitch and fix our world!";
         textWords = text.split(" ");
 
         // Timer for word-by-word display
