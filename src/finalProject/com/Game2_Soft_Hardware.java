@@ -20,6 +20,11 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     private int gameTitleY = -100; // Initial Y position of the game title (off-screen)
     private Clip walkSoundClip; // Clip for walking sound effect
 
+    // Sparkle animation variables
+    private int sparkleAlpha = 255; // Alpha value for sparkles
+    private boolean sparkleFadeOut = true; // Sparkle fade direction
+    private Timer sparkleAnimationTimer;
+
     public Game2_Soft_Hardware() {
         // Load background image
         try {
@@ -74,6 +79,20 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
             System.err.println("Error loading walking sound effect: " + e.getMessage());
         }
 
+        // Initialize the sparkles animation timer
+        sparkleAnimationTimer = new Timer(50, e -> {
+            // Sparkle fade animation
+            if (sparkleFadeOut) {
+                sparkleAlpha -= 10;
+                if (sparkleAlpha <= 200) sparkleFadeOut = false; // Adjusted minimum alpha to 200
+            } else {
+                sparkleAlpha += 10;
+                if (sparkleAlpha >= 255) sparkleFadeOut = true;
+            }
+            repaint();
+        });
+        sparkleAnimationTimer.start();
+
         // Start teleportation animation
         startTeleportation();
     }
@@ -99,6 +118,37 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
         if (showGameTitle) {
             int titleX = (getWidth() - gameTitleImage.getWidth(null)) / 2; // Center horizontally
             g2d.drawImage(gameTitleImage, titleX, gameTitleY, null);
+
+            // Draw sparkles around the game title
+            drawSparkles(g2d, titleX, gameTitleY, gameTitleImage.getWidth(null), gameTitleImage.getHeight(null));
+        }
+    }
+
+    private void drawSparkles(Graphics2D g2d, int x, int y, int width, int height) {
+        for (int i = 0; i < 20; i++) { // Increase the number of sparkles
+            // Randomly position sparkles closer to the title
+            int sparkleX, sparkleY;
+            do {
+                sparkleX = x + (int) (Math.random() * (width + 40)) - 20; // Reduced scatter area (closer to the title)
+                sparkleY = y + (int) (Math.random() * (height + 40)) - 20; // Reduced scatter area (closer to the title)
+            } while (sparkleX >= x && sparkleX <= x + width && sparkleY >= y && sparkleY <= y + height);
+
+            // Randomize sparkle size
+            int sparkleSize = 5 + (int) (Math.random() * 5); // Vary size between 5 and 10
+
+            // Use a solid white color with the current alpha value
+            g2d.setColor(new Color(255, 255, 255, sparkleAlpha));
+
+            // Draw the sparkle as a star shape
+            int[] xPoints = {
+                    sparkleX, sparkleX + sparkleSize / 4, sparkleX + sparkleSize / 2, sparkleX + sparkleSize / 4, sparkleX,
+                    sparkleX - sparkleSize / 4, sparkleX - sparkleSize / 2, sparkleX - sparkleSize / 4
+            };
+            int[] yPoints = {
+                    sparkleY - sparkleSize / 2, sparkleY - sparkleSize / 4, sparkleY, sparkleY + sparkleSize / 4, sparkleY + sparkleSize / 2,
+                    sparkleY + sparkleSize / 4, sparkleY, sparkleY - sparkleSize / 4
+            };
+            g2d.fillPolygon(xPoints, yPoints, 8);
         }
     }
 
