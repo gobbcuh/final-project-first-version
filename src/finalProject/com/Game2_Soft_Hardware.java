@@ -190,7 +190,14 @@ public class Game2_Soft_Hardware extends JPanel implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+        // Stop the walking sound effect when the key is released
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (walkSoundClip != null && walkSoundClip.isRunning()) {
+                walkSoundClip.stop(); // Stop the sound effect
+            }
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {}
