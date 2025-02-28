@@ -136,6 +136,11 @@ public class Player extends Entity {
                     gp.obj[i] = null;
                     gp.ui.showMessage("Speed Up!");
                     break;
+                case "Chess":
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);
+                    break;
             }
         }
     }
