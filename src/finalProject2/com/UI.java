@@ -49,7 +49,7 @@ public class UI {
             text = "Your time is:" + dFormat.format(playTime) + "!";
             textLength = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
             x = gp.screenWidth / 2 - textLength / 2;
-            y = gp.screenHeight / 2 - (gp.tileSize * 4);
+            y = gp.screenHeight / 2 + (gp.tileSize * 4);
             g2.drawString(text, x, y);
 
             g2.setFont(arial_80B);
