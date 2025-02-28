@@ -1,5 +1,6 @@
 package finalProject2.com;
 
+import object.OBJ_Boots;
 import object.OBJ_Chess;
 import object.OBJ_Door;
 import object.OBJ_Key;
@@ -38,6 +39,10 @@ public class AssetSetter {
         gp.obj[6] = new OBJ_Chess();
         gp.obj[6].worldX =  10 * gp.tileSize;
         gp.obj[6].worldY =  7 * gp.tileSize;
+
+        gp.obj[7] = new OBJ_Boots();
+        gp.obj[7].worldX =  37 * gp.tileSize;
+        gp.obj[7].worldY =  42 * gp.tileSize;
 
     }
 }
