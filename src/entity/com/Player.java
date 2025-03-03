@@ -2,6 +2,7 @@ package entity.com;
 
 import finalProject2.com.GamePanel;
 import finalProject2.com.KeyHandler;
+import finalProject2.com.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,18 +44,25 @@ public class Player extends Entity {
         direction = "down";
     }
     public void getPlayerImage() {
+        up1 = setup("1W");
+        up2 = setup("2W");
+        down1 = setup("1S");
+        down2 = setup("2S");
+        left1 = setup("1A");
+        left2 = setup("2A");
+        right1 = setup("1D");
+        right2 = setup("2D");
+    }
+    public BufferedImage setup(String imageName) {
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage image = null;
         try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/player/1W.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/player/2W.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/player/1S.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/2S.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/player/1A.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/player/2A.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/player/1D.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/player/2D.png"));
-        } catch (IOException e){
+            image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
+            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return image;
     }
 
     public void update() {
@@ -203,6 +211,6 @@ public class Player extends Entity {
                 };
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize,null);
+        g2.drawImage(image, screenX, screenY,null);
     }
 }
